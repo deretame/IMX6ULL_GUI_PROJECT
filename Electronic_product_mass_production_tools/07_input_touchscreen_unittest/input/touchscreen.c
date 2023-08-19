@@ -34,10 +34,10 @@ int main(int argc, char ** argv)
         }
         else
         {
-            printf("event    = %d", event.iType);
-            printf("x        = %d", event.iX);
-            printf("y        = %d", event.iY);
-            printf("pressure = %d", event.iPressure);
+            printf("event    = %d\n", event.iType);
+            printf("x        = %d\n", event.iX);
+            printf("y        = %d\n", event.iY);
+            printf("pressure = %d\n", event.iPressure);
         }
     }
     g_tRouchScreenDev.DeviceExit();
