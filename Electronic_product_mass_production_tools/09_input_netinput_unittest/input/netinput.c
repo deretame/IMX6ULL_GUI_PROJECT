@@ -24,6 +24,7 @@ static InputDevice g_tRouchScreenDev = {
     .DeviceExit    = NetInputDeviceExit,
 };
 
+#if NETTINPUT
 int main(int argc, char ** argv)
 {
     int ret;
@@ -51,6 +52,7 @@ int main(int argc, char ** argv)
 
     return 0;
 }
+#endif
 
 static int NetInputGetInputEvent(pInputEvent ptInputEvent)
 {

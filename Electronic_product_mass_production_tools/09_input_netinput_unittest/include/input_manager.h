@@ -5,6 +5,8 @@
 
 #define INPUT_TYPE_TOUCH 1
 #define INPUT_TYPE_NET   2
+#define TOUCHSCREEN      0
+#define NETTINPUT        1
 
 struct timeval;
 

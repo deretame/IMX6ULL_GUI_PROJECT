@@ -16,6 +16,7 @@ static InputDevice g_tRouchScreenDev = {
     .DeviceExit    = TouchScreenDeviceExit,
 };
 
+#if TOUCHSCREEN
 int main(int argc, char ** argv)
 {
     int ret;
@@ -44,6 +45,7 @@ int main(int argc, char ** argv)
 
     return 0;
 }
+#endif
 
 static int TouchScreenGetInputEvent(pInputEvent ptInputEvent)
 {
