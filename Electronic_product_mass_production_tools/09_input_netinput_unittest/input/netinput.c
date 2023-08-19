@@ -24,6 +24,34 @@ static InputDevice g_tRouchScreenDev = {
     .DeviceExit    = NetInputDeviceExit,
 };
 
+int main(int argc, char ** argv)
+{
+    int ret;
+    InputEvent event;
+
+    g_tRouchScreenDev.DeviceInit();
+
+    while (1)
+    {
+        ret = g_tRouchScreenDev.GetInputEvent(&event);
+        if (ret)
+        {
+            printf("GetInputEvent ERROR!\n");
+            g_tRouchScreenDev.DeviceExit();
+            return -1;
+        }
+        else
+        {
+            printf("str   = %s\n", event.str);
+            printf("event = %d\n", event.iType);
+            printf("time  = %ld\n", event.tTime.tv_sec);
+        }
+    }
+    g_tRouchScreenDev.DeviceExit();
+
+    return 0;
+}
+
 static int NetInputGetInputEvent(pInputEvent ptInputEvent)
 {
     int iAddrLen;
@@ -50,7 +78,6 @@ static int NetInputGetInputEvent(pInputEvent ptInputEvent)
 static int NetInputDeviceInit(void)
 {
     int iRet;
-    int iClientNum = -1;
     struct sockaddr_in tSocketServerAddr;
 
     iSocketServer = socket(AF_INET, SOCK_DGRAM, 0);
