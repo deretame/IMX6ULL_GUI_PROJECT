@@ -27,4 +27,13 @@ typedef struct FontOpr
     struct FontOpr * ptnext;
 } FontOpr, *pFontOpr;
 
+// freetype.c
+void FreeTypeRegister(void);
+
+// font_manager.c
+void RegisterFont(pFontOpr ptFontOpr);
+int SelectAndInitFont(char * aFontOprName, char * aFontFileName);
+int SetFontSize(int iFontSize);
+int GetFontBitMap(unsigned int dwcode, pFontBitMap ptFontBitMap);
+
 #endif

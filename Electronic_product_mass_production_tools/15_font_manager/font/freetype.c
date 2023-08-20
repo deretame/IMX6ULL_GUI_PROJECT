@@ -87,3 +87,8 @@ static int FreeTypeGetFontBitMap(unsigned int dwcode, pFontBitMap ptFontBitMap)
     ptFontBitMap->iNextOriginX = ptFontBitMap->iCurOriginX + slot->advance.x / 64;
     ptFontBitMap->iNextOriginY = ptFontBitMap->iCurOriginY;
 }
+
+void FreeTypeRegister(void)
+{
+    RegisterFont(&g_tFreeTypeOpr);
+}
