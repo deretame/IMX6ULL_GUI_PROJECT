@@ -32,5 +32,7 @@ typedef struct InputDevice
 void RegisterInputDevice(pInputDevice ptInputOpr);
 
 void InputInit(void);
+void InputDeviceInit(void);
+int GetInputEvent(pInputEvent ptInputEvent);
 
 #endif   // !_INPUT_MANAGER_H_

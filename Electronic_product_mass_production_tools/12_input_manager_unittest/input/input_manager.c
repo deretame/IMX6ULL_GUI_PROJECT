@@ -5,7 +5,6 @@
 #include <string.h>
 #include <unistd.h>
 
-static char g_buf[1000];
 static pthread_mutex_t g_tMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t g_tConVar = PTHREAD_COND_INITIALIZER;
 static pInputDevice g_InputDevs = NULL;
@@ -50,7 +49,7 @@ static int GetInputEventFromBuffer(pInputEvent ptInputEvent)
 
 // 完成实现
 
-void RegisterDisplay(pInputDevice ptInputOpr)
+void RegisterInputDevice(pInputDevice ptInputOpr)
 {
     ptInputOpr->ptNext = g_InputDevs;
     g_InputDevs        = ptInputOpr;
@@ -91,6 +90,7 @@ void InputDeviceInit(void)
 int GetInputEvent(pInputEvent ptInputEvent)
 {
     pInputEvent tEvent;
+    tEvent = ptInputEvent;
     int ret;
 
     /* 无数据休眠 */

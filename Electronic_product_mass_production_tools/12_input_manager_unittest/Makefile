@@ -17,7 +17,7 @@ export STRIP OBJCOPY OBJDUMP
 CFLAGS := -Wall -O2 -g
 CFLAGS += -I $(shell pwd)/include
 
-LDFLAGS := -lts
+LDFLAGS := -lts -lpthread
 
 export CFLAGS LDFLAGS
 
@@ -28,7 +28,7 @@ TARGET := test
 
 
 obj-y += dispaly/
-#obj-y += unittest/
+obj-y += unittest/
 obj-y += input/
 
 
