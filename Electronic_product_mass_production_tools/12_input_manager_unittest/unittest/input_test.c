@@ -39,33 +39,32 @@ int main(int argc, char ** argv)
     InputDeviceInit();
     while (1)
     {
-        while (1)
+        ret = GetInputEvent(&event);
+        if (ret)
         {
-            ret = GetInputEvent(&event);
-            if (ret)
+            printf("GetInputEvent ERROR!\n");
+            return -1;
+        }
+        else
+        {
+            if (event.iType == INPUT_TYPE_NET)
             {
-                printf("GetInputEvent ERROR!\n");
-                return -1;
+                printf("Type     = %d\n", event.iType);
+                printf("str      = %s\n", event.str);
+                printf("time     = %ld\n", event.tTime.tv_sec);
             }
-            else
+            else if (event.iType == INPUT_TYPE_TOUCH)
             {
-                if (INPUT_TYPE_NET == event.iType)
-                {
-                    printf("Type  = %d\n", event.iType);
-                    printf("str   = %s\n", event.str);
-                    printf("time  = %ld\n", event.tTime.tv_sec);
-                }
-                else if (INPUT_TYPE_TOUCH == event.iType)
-                {
-                    printf("Type     = %d\n", event.iType);
-                    printf("x        = %d\n", event.iX);
-                    printf("y        = %d\n", event.iY);
-                    printf("pressure = %d\n", event.iPressure);
-                    printf("time     = %ld\n", event.tTime.tv_sec);
-                }
+                printf("Type     = %d\n", event.iType);
+                printf("x        = %d\n", event.iX);
+                printf("y        = %d\n", event.iY);
+                printf("pressure = %d\n", event.iPressure);
+                printf("time     = %ld\n", event.tTime.tv_sec);
+                printf("\n");
             }
         }
     }
+
     return 0;
 }
 

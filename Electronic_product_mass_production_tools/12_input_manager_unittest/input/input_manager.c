@@ -89,14 +89,14 @@ void InputDeviceInit(void)
 
 int GetInputEvent(pInputEvent ptInputEvent)
 {
-    pInputEvent tEvent;
-    tEvent = ptInputEvent;
+    InputEvent tEvent;
     int ret;
 
     /* 无数据休眠 */
     pthread_mutex_lock(&g_tMutex);
-    if (GetInputEventFromBuffer(tEvent))
+    if (GetInputEventFromBuffer(&tEvent))
     {
+        *ptInputEvent = tEvent;
         pthread_mutex_unlock(&g_tMutex);
         return 0;
     }
@@ -104,14 +104,16 @@ int GetInputEvent(pInputEvent ptInputEvent)
     {
         // 休眠等待
         pthread_cond_wait(&g_tConVar, &g_tMutex);
-        if (GetInputEventFromBuffer(tEvent))
+        if (GetInputEventFromBuffer(&tEvent))
         {
+            *ptInputEvent = tEvent;
             ret = 0;
         }
         else
         {
             ret = -1;
         }
+        pthread_mutex_unlock(&g_tMutex);
     }
     return ret;
 }
