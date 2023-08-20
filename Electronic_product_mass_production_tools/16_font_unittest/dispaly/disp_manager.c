@@ -1,4 +1,5 @@
 #include "../include/disp_manager.h"
+#include "../include/font_manager.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -110,4 +111,29 @@ int FlushDispalyRegion(PRegion ptRegion, PDispBuff ptDispBuff)
 void DisplayInit(void)
 {
     FramebufferInit();
+}
+
+void DrawFontBitMap(FontBitMap ptFontBitMap, unsigned int dwColor)
+{
+    int i, j, p, q;
+    int x     = ptFontBitMap.tregion.iLeftupx;
+    int y     = ptFontBitMap.tregion.iLeftupy;
+    int x_max = x + ptFontBitMap.tregion.iwidth;
+    int y_max = y + ptFontBitMap.tregion.ihight;
+    int width = ptFontBitMap.tregion.iwidth;
+
+    unsigned char * buffer = ptFontBitMap.pucBuffer;
+    // printf("x = %d, y = %d\n", x, y);
+
+    for (j = y, q = 0; j < y_max; j++, q++)
+    {
+        for (i = x, p = 0; i < x_max; i++, p++)
+        {
+            if (i < 0 || j < 0 ||
+                i >= g_tDispBuff.ixres || j >= g_tDispBuff.iyres)
+                continue;
+            if (buffer[q * width + p])
+                PutPixel(i, j, dwColor);
+        }
+    }
 }

@@ -79,13 +79,13 @@ static int FreeTypeGetFontBitMap(unsigned int dwcode, pFontBitMap ptFontBitMap)
         return -1;
     }
 
-    ptFontBitMap->pucBuffer    = slot->bitmap.buffer;
-    ptFontBitMap->iLeftUpX     = slot->bitmap_left;
-    ptFontBitMap->iLeftUpY     = ptFontBitMap->iCurOriginY * 2 - slot->bitmap_top;
-    ptFontBitMap->iWidth       = slot->bitmap.width;
-    ptFontBitMap->iRows        = slot->bitmap.rows;
-    ptFontBitMap->iNextOriginX = ptFontBitMap->iCurOriginX + slot->advance.x / 64;
-    ptFontBitMap->iNextOriginY = ptFontBitMap->iCurOriginY;
+    ptFontBitMap->pucBuffer        = slot->bitmap.buffer;
+    ptFontBitMap->tregion.iLeftupx = slot->bitmap_left;
+    ptFontBitMap->tregion.iLeftupy = ptFontBitMap->iCurOriginY * 2 - slot->bitmap_top;
+    ptFontBitMap->tregion.iwidth   = slot->bitmap.width;
+    ptFontBitMap->tregion.ihight   = slot->bitmap.rows;
+    ptFontBitMap->iNextOriginX     = ptFontBitMap->iCurOriginX + slot->advance.x / 64;
+    ptFontBitMap->iNextOriginY     = ptFontBitMap->iCurOriginY;
 }
 
 void FreeTypeRegister(void)

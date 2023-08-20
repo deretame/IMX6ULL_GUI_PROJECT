@@ -27,6 +27,16 @@ typedef struct DispOpr
     struct DispOpr * ptNext;
 } DispOpr, *PDispOpr;
 
+typedef struct FontBitMap
+{
+    Region tregion;
+    int iCurOriginX;
+    int iCurOriginY;
+    int iNextOriginX;
+    int iNextOriginY;
+    unsigned char * pucBuffer;   // (point) unsigned char Bit Map
+} FontBitMap, *pFontBitMap;
+
 // framebuffer
 void FramebufferInit(void);
 
@@ -38,5 +48,6 @@ int InitDefaultDispaly(void);
 int FlushDispalyRegion(PRegion ptRegion, PDispBuff ptDispBuff);
 void DisplayInit(void);
 PDispBuff GetDispalyBuffer(void);
+void DrawFontBitMap(FontBitMap ptFontBitMap, unsigned int dwColor);
 
 #endif

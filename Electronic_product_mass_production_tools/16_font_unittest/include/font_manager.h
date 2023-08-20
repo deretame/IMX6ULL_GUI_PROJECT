@@ -5,12 +5,17 @@
 #define NULL ((void *)0)
 #endif
 
+typedef struct Region
+{
+    int iLeftupx;
+    int iLeftupy;
+    int iwidth;
+    int ihight;
+} Region, *PRegion;
+
 typedef struct FontBitMap
 {
-    int iLeftUpX;
-    int iLeftUpY;
-    int iWidth;
-    int iRows;
+    Region tregion;
     int iCurOriginX;
     int iCurOriginY;
     int iNextOriginX;
@@ -32,6 +37,7 @@ void FreeTypeRegister(void);
 
 // font_manager.c
 void RegisterFont(pFontOpr ptFontOpr);
+void FontsRegister(void);
 int SelectAndInitFont(char * aFontOprName, char * aFontFileName);
 int SetFontSize(int iFontSize);
 int GetFontBitMap(unsigned int dwcode, pFontBitMap ptFontBitMap);
