@@ -34,5 +34,7 @@ int FlushDispalyRegion(PRegion ptRegion, PDispBuff ptDispBuff);
 void DisplayInit(void);
 PDispBuff GetDispalyBuffer(void);
 void DrawFontBitMap(pFontBitMap ptFontBitMap, unsigned int dwColor);
+void DrawRegion(PRegion ptRegion, unsigned int dwColor);
+void DrawTextInRegionCentral(char * name, PRegion ptRegion, unsigned int dwcolor);
 
 #endif

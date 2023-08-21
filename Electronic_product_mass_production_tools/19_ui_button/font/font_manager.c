@@ -23,7 +23,6 @@ void RegisterFont(pFontOpr ptFontOpr)
 
 void FontsRegister(void)
 {
-    extern void FreeTypeRegister(void);
     FreeTypeRegister();
 }
 

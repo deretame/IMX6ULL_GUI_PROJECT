@@ -137,3 +137,64 @@ void DrawFontBitMap(pFontBitMap ptFontBitMap, unsigned int dwColor)
         }
     }
 }
+
+void DrawRegion(PRegion ptRegion, unsigned int dwColor)
+{
+    int x     = ptRegion->iLeftupx;
+    int y     = ptRegion->iLeftupy;
+    int width = ptRegion->iwidth;
+    int hight = ptRegion->ihight;
+
+    int i, j;
+
+    for (j = y; j < y + hight; j++)
+    {
+        for (i = x; i < x + width; i++)
+        {
+            PutPixel(i, j, dwColor);
+        }
+    }
+}
+
+void DrawTextInRegionCentral(char * name, PRegion ptRegion, unsigned int dwcolor)
+{
+    int error;
+    int i         = 0;
+    int n         = strlen(name);
+    int iFontSize = ptRegion->iwidth / n / 2;
+    FontBitMap tFontBitMap;
+
+    int iOriginX, iOriginY;
+
+    if (iFontSize > ptRegion->ihight)
+        iFontSize = ptRegion->ihight;
+
+    iOriginX = (ptRegion->iwidth - n * iFontSize) / 2 + ptRegion->iLeftupx;
+    iOriginY = (ptRegion->ihight - iFontSize) / 2 + iFontSize + ptRegion->iLeftupy;
+
+    SetFontSize(iFontSize);
+
+    while (name[i])
+    {
+        tFontBitMap.iCurOriginX = iOriginX;
+        tFontBitMap.iCurOriginY = iOriginY;
+
+        error = GetFontBitMap(name[i], &tFontBitMap);
+        if (error)
+        {
+            printf("GetFontBitMap error\n");
+            return;
+        }
+
+        // drow on buffer
+        DrawFontBitMap(&tFontBitMap, dwcolor);
+
+        // flush to lcd/web
+        // FlushDispalyRegion(&tFontBitMap.tregion, ptBuffer);
+
+        iOriginX = tFontBitMap.iNextOriginX;
+        iOriginY = tFontBitMap.iNextOriginY;
+
+        i++;
+    }
+}

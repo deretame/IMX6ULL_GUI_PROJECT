@@ -5,12 +5,20 @@
 #include "input_manager.h"
 #include "region.h"
 
+#define BUTTON_DEFAULT_COLOR 0xff0000
+#define BUTTON_PRESSED_COLOR 0x00ff00
+#define BUTTON_TEXT_COLOR    0x000000
+
+typedef int (*ONDROW_FUNC)(struct Button * ptButton, PDispBuff ptDispBuffer);
+typedef int (*ONPRESSED_FUNC)(struct Button * ptButton, PDispBuff ptDispBuffer, pInputEvent ptInputEvent);
+
 typedef struct Button
 {
     char * name;
+    int status;
     Region tRegion;
-    int (*OnDrow)(Button ptButton, PDispBuff ptDispBuffer);
-    int (*OnPressed)(Button ptButton, PDispBuff ptDispBuffer, pInputEvent ptInputEvent);
+    ONDROW_FUNC OnDrow;
+    ONPRESSED_FUNC OnPressed;
 } Button, *pButton;
 
 #endif
