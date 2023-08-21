@@ -9,6 +9,8 @@
 #define BUTTON_PRESSED_COLOR 0x00ff00
 #define BUTTON_TEXT_COLOR    0x000000
 
+struct Button;
+
 typedef int (*ONDROW_FUNC)(struct Button * ptButton, PDispBuff ptDispBuffer);
 typedef int (*ONPRESSED_FUNC)(struct Button * ptButton, PDispBuff ptDispBuffer, pInputEvent ptInputEvent);
 
@@ -20,5 +22,7 @@ typedef struct Button
     ONDROW_FUNC OnDrow;
     ONPRESSED_FUNC OnPressed;
 } Button, *pButton;
+
+void InitButton(pButton ptButton, char * name, PRegion ptRegion, ONDROW_FUNC OnDrow, ONPRESSED_FUNC OnPressed);
 
 #endif

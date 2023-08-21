@@ -33,7 +33,7 @@ obj-y += dispaly/
 obj-y += unittest/
 obj-y += input/
 obj-y += font/
-
+obj-y += ui/
 
 all : start_recursive_build $(TARGET)
 	@echo $(TARGET) has been built!
