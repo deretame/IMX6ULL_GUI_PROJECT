@@ -27,5 +27,5 @@ pPageAction Page(char * name)
 
 void PagesRegister(void)
 {
-    // MainPageRegister();
+    MainPageRegister();
 }

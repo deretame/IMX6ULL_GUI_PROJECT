@@ -10,4 +10,12 @@ typedef struct PageAction
     struct PageAction * pnext;
 } PageAction, *pPageAction;
 
+// page_manager.c
+void PageRegister(pPageAction ptPageAction);
+void PagesRegister(void);
+pPageAction Page(char * name);
+
+// main_page.c
+void MainPageRegister(void);
+
 #endif
