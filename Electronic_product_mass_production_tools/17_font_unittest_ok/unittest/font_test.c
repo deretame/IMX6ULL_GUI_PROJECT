@@ -13,13 +13,13 @@
 
 int main(int argc, char ** argv)
 {
-    int err;
-    PDispBuff ptbuffer;
+    int error;
+    PDispBuff ptBuffer;
     FontBitMap tFontBitMap;
     char * str = "www.100ask.net";
     int i      = 0;
-    int lcdx;
-    int lcdy;
+    int lcd_x;
+    int lcd_y;
     int font_size;
 
     if (argc != 5)
@@ -28,8 +28,8 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    lcdx      = strtol(argv[2], NULL, 0);
-    lcdy      = strtol(argv[3], NULL, 0);
+    lcd_x     = strtol(argv[2], NULL, 0);
+    lcd_y     = strtol(argv[3], NULL, 0);
     font_size = strtol(argv[4], NULL, 0);
 
     DisplayInit();
@@ -37,24 +37,27 @@ int main(int argc, char ** argv)
     SelectDefaultDispaly("fb");
 
     InitDefaultDispaly();
-    ptbuffer = GetDispalyBuffer();
+
+    ptBuffer = GetDispalyBuffer();
 
     FontsRegister();
-    err = SelectAndInitFont("freetype", argv[1]);
-    if (err)
+
+    error = SelectAndInitFont("freetype", argv[1]);
+    if (error)
     {
-        printf("SelectAndInitFont error\n");
+        printf("SelectAndInitFont err\n");
         return -1;
     }
 
     SetFontSize(font_size);
+
     while (str[i])
     {
-        tFontBitMap.tregion.iLeftupx = lcdx;
-        tFontBitMap.tregion.iLeftupy = lcdy;
+        tFontBitMap.iCurOriginX = lcd_x;
+        tFontBitMap.iCurOriginY = lcd_y;
 
-        err = GetFontBitMap(str[i], &tFontBitMap);
-        if (err)
+        error = GetFontBitMap(str[i], &tFontBitMap);
+        if (error)
         {
             printf("GetFontBitMap error\n");
             return -1;
@@ -64,10 +67,10 @@ int main(int argc, char ** argv)
         DrawFontBitMap(&tFontBitMap, 0xc26c75);
 
         // flush to lcd/web
-        FlushDispalyRegion(&tFontBitMap.tregion, ptbuffer);
+        FlushDispalyRegion(&tFontBitMap.tregion, ptBuffer);
 
-        lcdx = tFontBitMap.iNextOriginX;
-        lcdy = tFontBitMap.iNextOriginY;
+        lcd_x = tFontBitMap.iNextOriginX;
+        lcd_y = tFontBitMap.iNextOriginY;
 
         i++;
     }

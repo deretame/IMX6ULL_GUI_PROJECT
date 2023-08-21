@@ -26,9 +26,6 @@ typedef struct FontOpr
     struct FontOpr * ptnext;
 } FontOpr, *pFontOpr;
 
-// freetype.c
-void FreeTypeRegister(void);
-
 // font_manager.c
 void RegisterFont(pFontOpr ptFontOpr);
 void FontsRegister(void);
