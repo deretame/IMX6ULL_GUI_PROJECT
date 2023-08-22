@@ -16,7 +16,7 @@
 int main(int argc, char ** argv)
 {
     int error;
-    PDispBuff ptBuffer;
+    // PDispBuff ptBuffer;
 
     if (argc != 2)
     {
@@ -31,7 +31,7 @@ int main(int argc, char ** argv)
 
     InitDefaultDispaly();
 
-    ptBuffer = GetDispalyBuffer();
+    // ptBuffer = GetDispalyBuffer();
 
     // 初始化输入系统
     InputInit();

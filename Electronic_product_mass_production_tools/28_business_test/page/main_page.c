@@ -115,7 +115,7 @@ static void GenerateButtons(void)
 {
     int n;
     int row, rows;
-    int col, cols;
+    int col;
     int width, height;
     int n_per_line;
     PDispBuff ptDispBuff;
@@ -182,6 +182,7 @@ static int MainOnPressed(struct Button * ptButton, PDispBuff ptDispBuffer, pInpu
     char name[100];
     char status[100];
     char * strButton;
+    strButton = ptButton->name;
 
     // 1.0 对于触摸屏事件
     if (ptInputEvent->iType == INPUT_TYPE_TOUCH)
