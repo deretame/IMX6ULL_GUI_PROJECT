@@ -19,6 +19,7 @@ static int DefaultOnDrow(struct Button * ptButton, PDispBuff ptDispBuffer)
 
     return 0;
 }
+
 static int DefaultOnPressed(struct Button * ptButton, PDispBuff ptDispBuffer, pInputEvent ptInputEvent)
 {
     unsigned int dwcolor = BUTTON_DEFAULT_COLOR;
