@@ -16,6 +16,7 @@ export STRIP OBJCOPY OBJDUMP
 
 CFLAGS := -Wall -O2 -g
 CFLAGS += -I $(shell pwd)/include
+CFLAGS += -I/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include/freetype2/
 
 LDFLAGS := -lts -lpthread -lfreetype -lm
 
