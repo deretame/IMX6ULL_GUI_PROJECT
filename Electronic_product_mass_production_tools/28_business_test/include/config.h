@@ -1,22 +1,24 @@
-#ifndef _CONFIG_H_
-#define _CONFIG_H_
 
-#include "../include/region.h"
+#ifndef _CONFIG_H
+#define _CONFIG_H
 
-#define ITEMCONFIG_ITEM_MAX 30
-#define CFG_FILE            "/etc/test_gui/gui.conf"
+#include <common.h>
 
-typedef struct ItemCfg
-{
-    int index;
-    char name[100];
-    int bCanBeTouch;
-    char command[100];
-} ItemCfg, *pItemCfg;
+#define ITEMCFG_MAX_NUM 30
+#define CFG_FILE  "/etc/test_gui/gui.conf"
+
+typedef struct ItemCfg {
+	int index;
+	char name[100];
+	int bCanBeTouched;
+	char command[100];
+}ItemCfg, *PItemCfg;
 
 int ParseConfigFile(void);
-int GetItemCfgCout(void);
-pItemCfg GetItemCfgByIndex(int index);
-pItemCfg GetItemCfgByName(char * name);
+int GetItemCfgCount(void);
+PItemCfg GetItemCfgByIndex(int index);
+PItemCfg GetItemCfgByName(char *name);
+
 
 #endif
+

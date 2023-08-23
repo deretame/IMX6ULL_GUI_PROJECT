@@ -1,31 +1,34 @@
-#include "../include/page_manager.h"
+
+#include <common.h>
+#include <page_manager.h>
 #include <string.h>
 
-pPageAction g_ptPages = NULL;
+static PPageAction g_ptPages = NULL;
 
-void PagesRegister(void);
-
-void PageRegister(pPageAction ptPageAction)
+void PageRegister(PPageAction ptPageAction)
 {
-    ptPageAction->pnext = g_ptPages;
-    g_ptPages           = ptPageAction;
+	ptPageAction->ptNext = g_ptPages;
+	g_ptPages = ptPageAction;
 }
 
-pPageAction Page(char * name)
+PPageAction Page(char *name)
 {
-    pPageAction ptTmp = g_ptPages;
+	PPageAction ptTmp = g_ptPages;
 
-    while (ptTmp)
-    {
-        if (strcmp(ptTmp->name, name) == 0)
-            return ptTmp;
-        ptTmp = ptTmp->pnext;
-    }
+	while (ptTmp)
+	{
+		if (strcmp(name, ptTmp->name) == 0)
+			return ptTmp;
+		ptTmp = ptTmp->ptNext;
+	}
 
-    return NULL;
+	return NULL;
 }
+
 
 void PagesRegister(void)
 {
-    MainPageRegister();
+	extern void MainPageRegister(void);
+	MainPageRegister();
 }
+

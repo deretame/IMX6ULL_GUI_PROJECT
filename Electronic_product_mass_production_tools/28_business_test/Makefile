@@ -16,8 +16,6 @@ export STRIP OBJCOPY OBJDUMP
 
 CFLAGS := -Wall -O2 -g
 CFLAGS += -I $(shell pwd)/include
-CFLAGS += -I/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include/freetype2/
-
 
 LDFLAGS := -lts -lpthread -lfreetype -lm
 
@@ -29,15 +27,13 @@ export TOPDIR
 TARGET := test
 
 
-obj-y += business/
-obj-y += config/
-obj-y += dispaly/
-obj-y += font/
+obj-y += display/
 obj-y += input/
-obj-y += page/
+obj-y += font/
 obj-y += ui/
-#obj-y += unittest/
-
+obj-y += page/
+obj-y += config/
+obj-y += business/
 
 all : start_recursive_build $(TARGET)
 	@echo $(TARGET) has been built!

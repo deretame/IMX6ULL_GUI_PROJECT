@@ -1,61 +1,62 @@
-#include "../include/disp_manager.h"
-#include "../include/font_manager.h"
-#include "../include/input_manager.h"
-#include "../include/ui.h"
-#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <linux/fb.h>
+#include <fcntl.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <stdlib.h>
 
-int main(int argc, char ** argv)
+#include <disp_manager.h>
+#include <font_manager.h>
+#include <ui.h>
+
+int main(int argc, char **argv)
 {
-    int error;
-    PDispBuff ptBuffer;
-    Button tButton;
-    Region tRegion;
+	PDispBuff ptBuffer;
+	int error;
+	Button tButton;
+	Region tRegion;
 
-    if (argc != 2)
-    {
-        printf("Usage : %s <font_file>\n", argv[0]);
-        return -1;
-    }
+	if (argc != 2)
+	{
+		printf("Usage: %s <font_size>\n", argv[0]);
+		return -1;
+	}
+		
+	DisplayInit();
 
-    DisplayInit();
+	SelectDefaultDisplay("fb");
 
-    SelectDefaultDispaly("fb");
+	InitDefaultDisplay();
 
-    InitDefaultDispaly();
+	ptBuffer = GetDisplayBuffer();
 
-    ptBuffer = GetDispalyBuffer();
+	FontsRegister();
+	
+	error = SelectAndInitFont("freetype", argv[1]);
+	if (error)
+	{
+		printf("SelectAndInitFont err\n");
+		return -1;
+	}
 
-    FontsRegister();
-
-    error = SelectAndInitFont("freetype", argv[1]);
-    if (error)
-    {
-        printf("SelectAndInitFont err\n");
-        return -1;
-    }
-
-    tRegion.iLeftupx = 100;
-    tRegion.iLeftupy = 100;
-    tRegion.iwidth   = 300;
-    tRegion.ihight   = 100;
-    InitButton(&tButton, "test", &tRegion, NULL, NULL);
-
-    tButton.OnDrow(&tButton, ptBuffer);
-
-    while (1)
-    {
-        tButton.OnPressed(&tButton, ptBuffer, NULL);
-        sleep(2);
-    }
-
-    return 0;
+	tRegion.iLeftUpX = 200;
+	tRegion.iLeftUpY = 200;
+	tRegion.iWidth   = 300;
+	tRegion.iHeigh   = 100;
+	
+	InitButton(&tButton, "test", &tRegion, NULL, NULL);
+	tButton.OnDraw(&tButton, ptBuffer);
+	while (1)
+	{
+		tButton.OnPressed(&tButton, ptBuffer, NULL);
+		sleep(2);
+	}
+	
+	return 0;	
 }
+
+

@@ -1,21 +1,18 @@
-#ifndef _PAGE_MANAGER_
-#define _PAGE_MANAGER_
+#ifndef _PAGE_MANAGER_H
+#define _PAGE_MANAGER_H
 
-#include "region.h"
+typedef struct PageAction {
+	char *name;
+	void (*Run)(void *pParams);
+	struct PageAction *ptNext;
+}PageAction, *PPageAction;
 
-typedef struct PageAction
-{
-    char * name;
-    void (*Run)(void * pParams);
-    struct PageAction * pnext;
-} PageAction, *pPageAction;
-
-// page_manager.c
-void PageRegister(pPageAction ptPageAction);
+void PageRegister(PPageAction ptPageAction);
 void PagesRegister(void);
-pPageAction Page(char * name);
-
-// main_page.c
-void MainPageRegister(void);
+PPageAction Page(char *name);
 
 #endif
+
+
+
+

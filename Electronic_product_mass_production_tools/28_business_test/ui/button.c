@@ -1,51 +1,50 @@
-#include "../include/disp_manager.h"
-#include "../include/input_manager.h"
-#include "../include/ui.h"
 
-static int DefaultOnDrow(struct Button * ptButton, PDispBuff ptDispBuffer);
-static int DefaultOnPressed(struct Button * ptButton, PDispBuff ptDispBuffer, pInputEvent ptInputEvent);
-void InitButton(pButton ptButton, char * name, PRegion ptRegion, ONDROW_FUNC OnDrow, ONPRESSED_FUNC OnPressed);
 
-static int DefaultOnDrow(struct Button * ptButton, PDispBuff ptDispBuffer)
+#include <ui.h>
+
+
+static int DefaultOnDraw(struct Button *ptButton, PDispBuff ptDispBuff)
 {
-    // 绘制底色
-    DrawRegion(&ptButton->tRegion, BUTTON_DEFAULT_COLOR);
+	/* 绘制底色 */
+	DrawRegion(&ptButton->tRegion, BUTTON_DEFAULT_COLOR);
 
-    // 居中写文字
-    DrawTextInRegionCentral(ptButton->name, &ptButton->tRegion, BUTTON_TEXT_COLOR);
+	/* 居中写文字 */
+	DrawTextInRegionCentral(ptButton->name, &ptButton->tRegion, BUTTON_TEXT_COLOR);
 
-    // flush to lcd
-    FlushDispalyRegion(&ptButton->tRegion, ptDispBuffer);
+	/* flush to lcd/web */
+	FlushDisplayRegion(&ptButton->tRegion, ptDispBuff);
 
-    return 0;
+	return 0;
 }
 
-static int DefaultOnPressed(struct Button * ptButton, PDispBuff ptDispBuffer, pInputEvent ptInputEvent)
+static int DefaultOnPressed(struct Button *ptButton, PDispBuff ptDispBuff, PInputEvent ptInputEvent)
 {
-    unsigned int dwcolor = BUTTON_DEFAULT_COLOR;
+	unsigned int dwColor = BUTTON_DEFAULT_COLOR;
+	
+	ptButton->status = !ptButton->status;
+	if (ptButton->status)
+		dwColor = BUTTON_PRESSED_COLOR;
 
-    ptButton->status = !ptButton->status;
-    if (ptButton->status)
-        dwcolor = BUTTON_PRESSED_COLOR;
+	/* 绘制底色 */
+	DrawRegion(&ptButton->tRegion, dwColor);
 
-    // 绘制底色
-    DrawRegion(&ptButton->tRegion, dwcolor);
+	/* 居中写文字 */
+	DrawTextInRegionCentral(ptButton->name, &ptButton->tRegion, BUTTON_TEXT_COLOR);
 
-    // 居中写文字
-    DrawTextInRegionCentral(ptButton->name, &ptButton->tRegion, BUTTON_TEXT_COLOR);
-
-    // flush to lcd
-    FlushDispalyRegion(&ptButton->tRegion, ptDispBuffer);
-
-    return 0;
+	/* flush to lcd/web */
+	FlushDisplayRegion(&ptButton->tRegion, ptDispBuff);
+	return 0;
 }
 
-void InitButton(pButton ptButton, char * name, PRegion ptRegion, ONDROW_FUNC OnDrow, ONPRESSED_FUNC OnPressed)
+
+void InitButton(PButton ptButton, char *name, PRegion ptRegion, ONDRAW_FUNC OnDraw, ONPRESSED_FUNC OnPressed)
 {
-    ptButton->name   = name;
-    ptButton->status = 0;
-    if (ptRegion)
-        ptButton->tRegion = *ptRegion;
-    ptButton->OnDrow    = OnDrow ? OnDrow : DefaultOnDrow;
-    ptButton->OnPressed = OnPressed ? OnPressed : DefaultOnPressed;
+	ptButton->status = 0;
+	ptButton->name = name;
+	if (ptRegion)
+		ptButton->tRegion = *ptRegion;
+	ptButton->OnDraw    = OnDraw ? OnDraw : DefaultOnDraw;
+	ptButton->OnPressed = OnPressed ? OnPressed : DefaultOnPressed;
 }
+
+
