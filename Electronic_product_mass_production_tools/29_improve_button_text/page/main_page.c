@@ -66,6 +66,45 @@ static int MainPageOnPressed(struct Button * ptButton, PDispBuff ptDispBuff, PIn
     return 0;
 }
 
+static int GetFontSizeForAllButton(void)
+{
+    int i;
+    int max_len   = -1;
+    int max_index = 0;
+    int len;
+    RegionCartesian tRegionCar;
+    float k, kx, ky;
+
+    /* 1. 找出name最长的Button */
+    for (i = 0; i < g_tButtonCnt; i++)
+    {
+        len = strlen(g_tButtons[i].name);
+        if (len > max_len)
+        {
+            max_len   = len;
+            max_index = i;
+        }
+    }
+
+    /* 2. 以font_size =100, 算出它的外框 */
+    SetFontSize(100);
+    GetStringRegionCar(g_tButtons[max_index].name, &tRegionCar);
+
+    /* 3. 把文字的外框缩放为Button的外框 */
+    kx = (float)g_tButtons[max_index].tRegion.iWidth / tRegionCar.iWidth;
+    ky = (float)g_tButtons[max_index].tRegion.iHeigh / tRegionCar.iHeigh;
+    // printf("button width / str width   = %d/%d = %f\n", g_tButtons[max_index].tRegion.iWidth, tRegionCar.iWidth, kx);
+    // printf("button height / str height = %d/%d = %f\n", g_tButtons[max_index].tRegion.iHeigh, tRegionCar.iHeigh, ky);
+    if (kx < ky)
+        k = kx;
+    else
+        k = ky;
+
+    // printf("font size = %d\n", (int)(k*100));
+    /* 4. 反算出font size, 只取0.80, 避免文字过于接近边界 */
+    return k * 100 * 0.8;
+}
+
 static void GenerateButtons(void)
 {
     int width, height;
@@ -79,6 +118,7 @@ static void GenerateButtons(void)
     int pre_start_x, pre_start_y;
     PButton pButton;
     int i = 0;
+    int iFontSize;
 
     /* 算出单个按钮的width/height */
     g_tButtonCnt = n = GetItemCfgCount();
@@ -119,9 +159,15 @@ static void GenerateButtons(void)
         }
     }
 
+    iFontSize = GetFontSizeForAllButton();
+    // SetFontSize(iFontSize);
+
     /* OnDraw */
     for (i = 0; i < n; i++)
+    {
+        g_tButtons[i].iFontSize = iFontSize;
         g_tButtons[i].OnDraw(&g_tButtons[i], pDispBuff);
+    }
 }
 
 static int isTouchPointInRegion(int iX, int iY, PRegion ptRegion)

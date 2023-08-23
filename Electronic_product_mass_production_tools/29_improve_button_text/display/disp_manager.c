@@ -11,22 +11,22 @@ static int pixel_width;
 
 void DrawTextInRegionCentral(char * name, PRegion ptRegion, unsigned int dwColor)
 {
-    int n         = strlen(name);
-    int iFontSize = ptRegion->iWidth / n / 2;
+    // int n = strlen(name);
     FontBitMap tFontBitMap;
+    RegionCartesian tRegionCar;
 
     int iOriginX, iOriginY;
     int i = 0;
     int error;
 
-    if (iFontSize > ptRegion->iHeigh)
-        iFontSize = ptRegion->iHeigh;
+    /* 计算字符串的外框 */
+    GetStringRegionCar(name, &tRegionCar);
 
-    iOriginX = (ptRegion->iWidth - n * iFontSize) / 2 + ptRegion->iLeftUpX;
-    iOriginY = (ptRegion->iHeigh - iFontSize) / 2 + iFontSize + ptRegion->iLeftUpY;
+    /* 算出第一个字符的origin */
+    iOriginX = ptRegion->iLeftUpX + (ptRegion->iWidth - tRegionCar.iWidth) / 2 - tRegionCar.iLeftUpX;
+    iOriginY = ptRegion->iLeftUpY + (ptRegion->iHeigh - tRegionCar.iHeigh) / 2 + tRegionCar.iLeftUpY;
 
-    SetFontSize(iFontSize);
-
+    /* 逐个绘制 */
     while (name[i])
     {
         /* get bitmap */

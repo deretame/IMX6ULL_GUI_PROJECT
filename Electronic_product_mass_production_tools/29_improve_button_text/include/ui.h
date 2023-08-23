@@ -1,4 +1,3 @@
-
 #ifndef _UI_H
 #define _UI_H
 
@@ -19,6 +18,7 @@ typedef int (*ONPRESSED_FUNC)(struct Button * ptButton, PDispBuff ptDispBuff, PI
 typedef struct Button
 {
     char * name;
+    int iFontSize;
     int status;
     Region tRegion;
     ONDRAW_FUNC OnDraw;

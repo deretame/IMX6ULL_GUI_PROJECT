@@ -13,4 +13,12 @@ typedef struct Region
     int iHeigh;
 } Region, *PRegion;
 
+typedef struct RegionCartesian
+{
+    int iLeftUpX;
+    int iLeftUpY;
+    int iWidth;
+    int iHeigh;
+} RegionCartesian, *PRegionCartesian;
+
 #endif

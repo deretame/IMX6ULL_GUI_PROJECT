@@ -18,6 +18,78 @@
 static FT_Face g_tFace;
 static int g_iDefaultFontSize = 12;
 
+static int FreetypeGetStringRegionCar(char * str, PRegionCartesian ptRegionCar)
+{
+    int i;
+    int error;
+    FT_BBox bbox;
+    FT_BBox glyph_bbox;
+    FT_Vector pen;
+    FT_Glyph glyph;
+    FT_GlyphSlot slot = g_tFace->glyph;
+
+    /* 初始化 */
+    bbox.xMin = bbox.yMin = 32000;
+    bbox.xMax = bbox.yMax = -32000;
+
+    /* 指定原点为(0, 0) */
+    pen.x = 0;
+    pen.y = 0;
+
+    /* 计算每个字符的bounding box */
+    /* 先translate, 再load char, 就可以得到它的外框了 */
+    for (i = 0; i < strlen(str); i++)
+    {
+        /* 转换：transformation */
+        FT_Set_Transform(g_tFace, 0, &pen);
+
+        /* 加载位图: load glyph image into the slot (erase previous one) */
+        error = FT_Load_Char(g_tFace, str[i], FT_LOAD_RENDER);
+        if (error)
+        {
+            printf("FT_Load_Char error\n");
+            return -1;
+        }
+
+        /* 取出glyph */
+        error = FT_Get_Glyph(g_tFace->glyph, &glyph);
+        if (error)
+        {
+            printf("FT_Get_Glyph error!\n");
+            return -1;
+        }
+
+        /* 从glyph得到外框: bbox */
+        FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_TRUNCATE, &glyph_bbox);
+
+        /* 更新外框 */
+        if (glyph_bbox.xMin < bbox.xMin)
+            bbox.xMin = glyph_bbox.xMin;
+
+        if (glyph_bbox.yMin < bbox.yMin)
+            bbox.yMin = glyph_bbox.yMin;
+
+        if (glyph_bbox.xMax > bbox.xMax)
+            bbox.xMax = glyph_bbox.xMax;
+
+        if (glyph_bbox.yMax > bbox.yMax)
+            bbox.yMax = glyph_bbox.yMax;
+
+        /* 计算下一个字符的原点: increment pen position */
+        pen.x += slot->advance.x;
+        pen.y += slot->advance.y;
+    }
+
+    /* return string bbox */
+    //*abbox = bbox;
+    ptRegionCar->iLeftUpX = bbox.xMin;
+    ptRegionCar->iLeftUpY = bbox.yMax;
+    ptRegionCar->iWidth   = bbox.xMax - bbox.xMin + 1;
+    ptRegionCar->iHeigh   = bbox.yMax - bbox.yMin + 1;
+
+    return 0;
+}
+
 static int FreeTypeFontInit(char * aFineName)
 {
     FT_Library library;
@@ -81,10 +153,11 @@ static int FreeTypeGetFontBitMap(unsigned int dwCode, PFontBitMap ptFontBitMap)
 }
 
 static FontOpr g_tFreetypeOpr = {
-    .name          = "freetype",
-    .FontInit      = FreeTypeFontInit,
-    .SetFontSize   = FreeTypeSetFontSize,
-    .GetFontBitMap = FreeTypeGetFontBitMap,
+    .name               = "freetype",
+    .FontInit           = FreeTypeFontInit,
+    .SetFontSize        = FreeTypeSetFontSize,
+    .GetFontBitMap      = FreeTypeGetFontBitMap,
+    .GetStringRegionCar = FreetypeGetStringRegionCar,
 };
 
 void FreetypeRegister(void)
