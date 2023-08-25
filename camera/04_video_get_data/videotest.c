@@ -64,5 +64,23 @@ int main(int argc, char ** argv)
         fmt_index++;
     }
 
+    /* 设置格式 */
+    struct v4l2_format fmt;
+    memset(&fmt, 0, sizeof(struct v4l2_format));
+    fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    fmt.fmt.pix.width       = 1024;
+    fmt.fmt.pix.height      = 768;
+    fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;
+    fmt.fmt.pix.field       = V4L2_FIELD_ANY;
+    if (ioctl(fd, VIDIOC_S_FMT, &fmt) == 0)
+    {
+        printf("set format ok, real dpi : %d * %d\n", fmt.fmt.pix.width, fmt.fmt.pix.height);
+    }
+    else
+    {
+        printf("can't set format : dpi : 1024 * 768\n");
+        return -1;
+    }
+
     return 0;
 }
