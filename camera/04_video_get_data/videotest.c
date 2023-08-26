@@ -28,6 +28,9 @@ int main(int argc, char ** argv)
     int frame_index = 0;
     void * bufs[NB_BUFFER];
     int buf_cnt;
+    struct pollfd fds[1];
+    char filename[32];
+    int file_cnt = 0;
 
     if (argc != 2)
     {
@@ -117,7 +120,6 @@ int main(int argc, char ** argv)
     }
 
     struct v4l2_requestbuffers rb;
-    struct v4l2_buffer buf;
 
     memset(&rb, 0, sizeof(struct v4l2_requestbuffers));
     rb.count  = NB_BUFFER;
@@ -131,6 +133,7 @@ int main(int argc, char ** argv)
         // 申请成功后, mmap这些buffer
         for (i = 0; i < rb.count; i++)
         {
+            struct v4l2_buffer buf;
             buf_cnt = rb.count;
             memset(&buf, 0, sizeof(struct v4l2_buffer));
             buf.index  = i;
@@ -164,6 +167,7 @@ int main(int argc, char ** argv)
     /* 将所有 buffer 放入空闲链表 */
     for (i = 0; i < buf_cnt; ++i)
     {
+        struct v4l2_buffer buf;
         memset(&buf, 0, sizeof(struct v4l2_buffer));
         buf.index  = i;
         buf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -189,12 +193,42 @@ int main(int argc, char ** argv)
     while (1)
     {
         // poll
+        memset(fds, 0, sizeof(fds));
+        fds[0].fd     = fd;
+        fds[0].events = POLLIN;
+        if (poll(fds, 1, -1) == 1)
+        {
+            // 把buffer取出队列
+            struct v4l2_buffer buf;
+            memset(&buf, 0, sizeof(struct v4l2_buffer));
+            buf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            buf.memory = V4L2_MEMORY_MMAP;
 
-        // 把buffer取出队列
+            if (ioctl(fd, VIDIOC_DQBUF, &buf) != 0)
+            {
+                perror("Unable to dequeue buffer");
+                return -1;
+            }
 
-        // 把buffer的数据存为文件
+            // 把buffer的数据存为文件
+            sprintf(filename, "video_raw_data%04d.jpg", file_cnt++);
+            int fd_file = open(filename, O_RDWR | O_CREAT, 0666);
+            if (fd_file < 0)
+            {
+                printf("can't create file %s\n", filename);
+            }
+            printf("capture to %s\n", filename);
 
-        // 把buffer放入队列
+            write(fd_file, bufs[buf.index], buf.bytesused);
+            close(fd_file);
+
+            // 把buffer放入队列
+            if (ioctl(fd, VIDIOC_QBUF, &buf) != 0)
+            {
+                perror("Unable to queue buffer");
+                return -1;
+            }
+        }
     }
 
     // 关闭摄像头
