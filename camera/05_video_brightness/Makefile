@@ -1,6 +1,6 @@
 CC = arm-buildroot-linux-gnueabihf-gcc
 CFLAGS = -Wall -O2
-LDFLAGS = 
+LDFLAGS = -lpthread
 
 SRC = videotest.c
 OBJ = $(SRC:.c=.o)

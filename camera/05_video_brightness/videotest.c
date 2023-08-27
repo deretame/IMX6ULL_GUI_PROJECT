@@ -2,6 +2,7 @@
 #include <linux/types.h> /* for videodev2.h */
 #include <linux/videodev2.h>
 #include <poll.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/ioctl.h>
@@ -14,6 +15,8 @@
 #define DBG(...)                                                               \
     fprintf(stderr, " DBG(%s, %s(), %d): ", __FILE__, __FUNCTION__, __LINE__); \
     fprintf(stderr, __VA_ARGS__)
+
+static void * thread_brightness_control(void * args);
 
 /* ./video_test </dev/video0> */
 
@@ -190,6 +193,11 @@ int main(int argc, char ** argv)
     }
     printf("start capture ok\n");
 
+    // 创建线程用来控制亮度
+    pthread_t thread;
+    pthread_create(&thread, NULL, thread_brightness_control, (void *)fd);
+
+    // 拍照
     while (1)
     {
         // poll
@@ -229,6 +237,7 @@ int main(int argc, char ** argv)
                 return -1;
             }
         }
+        // sleep(2);
     }
 
     // 关闭摄像头
@@ -242,4 +251,57 @@ int main(int argc, char ** argv)
     printf("stop capture ok\n");
 
     return 0;
+}
+
+static void * thread_brightness_control(void * args)
+{
+    int fd = (int)args;
+    unsigned char c;
+    // int brightness;
+    int delta;
+
+    // 查询
+    struct v4l2_queryctrl qctrl;
+    memset(&qctrl, 0, sizeof(qctrl));
+    qctrl.id = V4L2_CID_BRIGHTNESS;   // V4L2_CID_BASE+0;
+    if (ioctl(fd, VIDIOC_QUERYCTRL, &qctrl) != 0)
+    {
+        printf("can't query brightness\n");
+        return NULL;
+    }
+
+    printf("brightness min = %d, max = %d\n", qctrl.minimum, qctrl.maximum);
+    delta = (qctrl.maximum - qctrl.minimum) / 10;
+
+    // 获得当前值
+    struct v4l2_control ctl;
+    ctl.id    = V4L2_CID_BRIGHTNESS;   // V4L2_CID_BASE+0;
+    ctl.value = 0;
+    ioctl(fd, VIDIOC_S_CTRL, &ctl);
+    ioctl(fd, VIDIOC_G_CTRL, &ctl);
+
+    printf("ctl's  value = %d, \n", ctl.value);
+
+    while (1)
+    {
+        c = getchar();
+        if (c == 'u' || c == 'U')
+        {
+            ctl.value = ctl.value + delta;
+            printf("ctl's  value = %d\n", ctl.value);
+        }
+        else if (c == 'd' || c == 'D')
+        {
+            ctl.value = ctl.value - delta;
+            printf("ctl's  value = %d\n", ctl.value);
+        }
+        if (ctl.value > qctrl.maximum)
+            ctl.value = qctrl.maximum;
+        if (ctl.value < qctrl.minimum)
+            ctl.value = qctrl.minimum;
+
+        ioctl(fd, VIDIOC_S_CTRL, &ctl);
+    }
+
+    return NULL;
 }
