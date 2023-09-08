@@ -1,11 +1,10 @@
-#include <config.h>
-#include <fonts_manager.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "../include/config.h"
+#include "../include/fonts_manager.h"
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-
 
 static int GBKFontInit(char *pcFontFile, unsigned int dwFontSize);
 static int GBKGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap);

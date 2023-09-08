@@ -77,27 +77,6 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    iError = DisplayInit();
-    if (iError)
-    {
-        printf("DisplayInit error!\n");
-        return -1;
-    }
-
-    iError = FontsInit();
-    if (iError)
-    {
-        printf("FontsInit error!\n");
-        return -1;
-    }
-
-    iError = EncodingInit();
-    if (iError)
-    {
-        printf("EncodingInit error!\n");
-        return -1;
-    }
-
     if (bList)
     {
         printf("supported display:\n");
@@ -114,6 +93,13 @@ int main(int argc, char ** argv)
     strncpy(acTextFile, argv[optind], 128);
     acTextFile[127] = '\0';
 
+    iError = DrawInit();
+    if (iError)
+    {
+        printf("DrawInit error!\n");
+        return -1;
+    }
+
     iError = OpenTextFile(acTextFile);
     if (iError)
     {
@@ -121,10 +107,10 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    iError = SetTextDetail(acHzkFile, acFreetypeFile, dwFontSize);
+    iError = SetFontsDetail(acHzkFile, acFreetypeFile, dwFontSize);
     if (iError)
     {
-        printf("SetTextDetail error!\n");
+        printf("SetFontsDetail error!\n");
         return -1;
     }
 

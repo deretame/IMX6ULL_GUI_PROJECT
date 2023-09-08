@@ -1,6 +1,7 @@
-#include <config.h>
-#include <fonts_manager.h>
+#include "../include/fonts_manager.h"
+#include "../include/config.h"
 #include <string.h>
+
 
 static PT_FontOpr g_ptFontOprHead = NULL;
 
