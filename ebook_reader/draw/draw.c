@@ -1,15 +1,16 @@
-#include <config.h>
-#include <disp_manager.h>
-#include <draw.h>
-#include <encoding_manager.h>
+#include "../include/draw.h"
+#include "../include/config.h"
+#include "../include/disp_manager.h"
+#include "../include/encoding_manager.h"
+#include "../include/fonts_manager.h"
 #include <fcntl.h>
-#include <fonts_manager.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
 
 typedef struct PageDesc
 {

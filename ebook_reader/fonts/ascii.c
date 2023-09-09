@@ -1,6 +1,5 @@
-
-#include <config.h>
-#include <fonts_manager.h>
+#include "../include/config.h"
+#include "../include/fonts_manager.h"
 
 #define FONTDATAMAX 4096
 
@@ -12,7 +11,6 @@ static T_FontOpr g_tASCIIFontOpr = {
 	.FontInit      = ASCIIFontInit,
 	.GetFontBitmap = ASCIIGetFontBitmap,
 };
-
 
 static const unsigned char fontdata_8x16[FONTDATAMAX] = {
 

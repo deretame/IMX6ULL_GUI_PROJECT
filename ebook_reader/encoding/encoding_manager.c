@@ -1,7 +1,8 @@
-#include <config.h>
-#include <encoding_manager.h>
-#include <string.h>
+#include "../include/encoding_manager.h"
+#include "../include/config.h"
+#include "../include/string.h"
 #include <stdlib.h>
+
 
 static PT_EncodingOpr g_ptEncodingOprHead;
 

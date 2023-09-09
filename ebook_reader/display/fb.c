@@ -1,12 +1,13 @@
-#include <config.h>
-#include <disp_manager.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "../include/config.h"
+#include "../include/disp_manager.h"
 #include <fcntl.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
 #include <linux/fb.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 
 static int FBDeviceInit(void);
 static int FBShowPixel(int iX, int iY, unsigned int dwColor);

@@ -1,6 +1,5 @@
-
-#include <config.h>
-#include <fonts_manager.h>
+#include "../include/config.h"
+#include "../include/fonts_manager.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H

@@ -1,8 +1,8 @@
-#include <config.h>
-#include <disp_manager.h>
-#include <draw.h>
-#include <encoding_manager.h>
-#include <fonts_manager.h>
+#include "include/config.h"
+#include "include/disp_manager.h"
+#include "include/draw.h"
+#include "include/encoding_manager.h"
+#include "include/fonts_manager.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

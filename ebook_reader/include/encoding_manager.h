@@ -1,9 +1,8 @@
-
 #ifndef _ENCODING_MANAGER_H
 #define _ENCODING_MANAGER_H
 
-#include <fonts_manager.h>
-#include <disp_manager.h>
+#include "disp_manager.h"
+#include "fonts_manager.h"
 
 typedef struct EncodingOpr {
 	char *name;

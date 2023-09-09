@@ -1,5 +1,5 @@
-#include <config.h>
-#include <encoding_manager.h>
+#include "../include/config.h"
+#include "../include/encoding_manager.h"
 #include <string.h>
 
 static int isUtf16leCoding(unsigned char *pucBufHead);
