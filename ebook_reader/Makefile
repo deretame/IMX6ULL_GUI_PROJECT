@@ -2,8 +2,12 @@ CROSSCOMPILE := arm-linux-
 
 CFLAGS 	:= -Wall -O2 -c
 CFLAGS  += -I$(PWD)/include 
-CFLAGS  += -I/home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include/freetype2/
 
+# for 100ask imx6ull
+CFLAGS += -I /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/arm-buildroot-linux-gnueabihf/sysroot/usr/include/freetype2
+
+# for 100ask stm32mp157
+CFLAGS += -I /home/book/100ask_stm32mp157_pro-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/arm-buildroot-linux-gnueabihf/sysroot/usr/include/freetype2
 
 LDFLAGS := -lm -lfreetype
 

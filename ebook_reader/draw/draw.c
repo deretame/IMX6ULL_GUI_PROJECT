@@ -1,9 +1,9 @@
-#include "../include/draw.h"
-#include "../include/config.h"
-#include "../include/disp_manager.h"
-#include "../include/encoding_manager.h"
-#include "../include/fonts_manager.h"
+#include <config.h>
+#include <disp_manager.h>
+#include <draw.h>
+#include <encoding_manager.h>
 #include <fcntl.h>
+#include <fonts_manager.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
@@ -73,7 +73,7 @@ int OpenTextFile(char * pcFileName)
     }
 }
 
-int SetFontsDetail(char * pcHZKFile, char * pcFileFreetype, unsigned int dwFontSize)
+int SetTextDetail(char * pcHZKFile, char * pcFileFreetype, unsigned int dwFontSize)
 {
     int iError = 0;
     PT_FontOpr ptFontOpr;
@@ -248,6 +248,11 @@ int ShowOneFont(PT_FontBitMap ptFontBitMap)
         return -1;
     }
     return 0;
+}
+
+void CLSBlack(void)
+{
+    g_ptDispOpr->CleanScreen(0x000000);
 }
 
 int ShowOnePage(unsigned char * pucTextFileMemCurPos)
@@ -443,32 +448,4 @@ int ShowPrePage(void)
         g_ptCurPage = g_ptCurPage->ptPrePage;
     }
     return iError;
-}
-
-int DrawInit(void)
-{
-    int iError;
-
-    iError = DisplayInit();
-    if (iError)
-    {
-        printf("DisplayInit error!\n");
-        return -1;
-    }
-
-    iError = FontsInit();
-    if (iError)
-    {
-        printf("FontsInit error!\n");
-        return -1;
-    }
-
-    iError = EncodingInit();
-    if (iError)
-    {
-        printf("EncodingInit error!\n");
-        return -1;
-    }
-
-    return 0;
 }
