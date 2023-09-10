@@ -27,12 +27,13 @@ export TOPDIR
 
 TARGET := show_file
 
+
 obj-y += main.o
 obj-y += display/
 obj-y += draw/
 obj-y += encoding/
 obj-y += fonts/
-#obj-y += input/
+obj-y += input/
 
 all : 
 	make -C ./ -f $(TOPDIR)/Makefile.build
@@ -48,6 +49,5 @@ distclean:
 	rm -f $(shell find -name "*.o")
 	rm -f $(shell find -name "*.d")
 	rm -f $(TARGET)
-	@echo "彻底清除"
-
+	@echo "完全清理完成"
 	

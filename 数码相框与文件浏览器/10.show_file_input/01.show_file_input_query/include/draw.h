@@ -1,4 +1,3 @@
-
 #ifndef _DRAW_H
 #define _DRAW_H
 int OpenTextFile(char * pcFileName);
@@ -6,6 +5,7 @@ int SetTextDetail(char * pcHZKFile, char * pcFileFreetype, unsigned int dwFontSi
 int SelectAndInitDisplay(char * pcName);
 int ShowNextPage(void);
 int ShowPrePage(void);
-void CLSBlack(void);
+int GetDispResolution(int * piXres, int * piYres);
+int SCLBlack(void);
 
 #endif /* _DRAW_H */

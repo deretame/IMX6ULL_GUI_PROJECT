@@ -3,6 +3,7 @@
 #include "include/draw.h"
 #include "include/encoding_manager.h"
 #include "include/fonts_manager.h"
+#include "include/input_manager.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,8 +20,9 @@ int main(int argc, char ** argv)
 
     char acDisplay[128];
 
-    char cOpr;
     int bList = 0;
+
+    T_InputEvent tInputEvent;
 
     acHzkFile[0]      = '\0';
     acFreetypeFile[0] = '\0';
@@ -98,6 +100,13 @@ int main(int argc, char ** argv)
         return -1;
     }
 
+    iError = InputInit();
+    if (iError)
+    {
+        printf("InputInit error!\n");
+        return -1;
+    }
+
     if (bList)
     {
         printf("supported display:\n");
@@ -108,6 +117,10 @@ int main(int argc, char ** argv)
 
         printf("supported encoding:\n");
         ShowEncodingOpr();
+
+        printf("supported input:\n");
+        ShowInputOpr();
+
         return 0;
     }
 
@@ -137,6 +150,13 @@ int main(int argc, char ** argv)
         return -1;
     }
 
+    iError = AllInputDevicesInit();
+    if (iError)
+    {
+        DBG_PRINTF("Error AllInputDevicesInit\n");
+        return -1;
+    }
+
     DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
     iError = ShowNextPage();
     DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
@@ -146,30 +166,26 @@ int main(int argc, char ** argv)
         return -1;
     }
 
+    printf("Enter 'n' to show next page, 'u' to show previous page, 'q' to exit: ");
+
     while (1)
     {
-        printf("Enter 'n' to show next page, 'u' to show previous page, 'q' to exit: ");
 
-        do {
-            cOpr = getchar();
-        } while ((cOpr != 'n') && (cOpr != 'u') && (cOpr != 'q'));
-
-        if (cOpr == 'n')
+        if (0 == GetInputEvent(&tInputEvent))
         {
-            ShowNextPage();
-        }
-        else if (cOpr == 'u')
-        {
-            ShowPrePage();
-        }
-        else if (cOpr == 'q')
-        {
-            CLSBlack();
-            return 0;
-        }
-        else
-        {
-            printf("please return 'u' 'n'or'q'\n");
+            if (tInputEvent.iVal == INPUT_VALUE_DOWN)
+            {
+                ShowNextPage();
+            }
+            else if (tInputEvent.iVal == INPUT_VALUE_UP)
+            {
+                ShowPrePage();
+            }
+            else if (tInputEvent.iVal == INPUT_VALUE_EXIT)
+            {
+                // SCLBlack();
+                return 0;
+            }
         }
     }
     return 0;

@@ -11,7 +11,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-
 typedef struct PageDesc
 {
     int iPage;
@@ -130,6 +129,20 @@ int SelectAndInitDisplay(char * pcName)
 
     iError = g_ptDispOpr->DeviceInit();
     return iError;
+}
+
+int GetDispResolution(int * piXres, int * piYres)
+{
+    if (g_ptDispOpr)
+    {
+        *piXres = g_ptDispOpr->iXres;
+        *piYres = g_ptDispOpr->iYres;
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 int IncLcdX(int iX)
@@ -251,11 +264,6 @@ int ShowOneFont(PT_FontBitMap ptFontBitMap)
     return 0;
 }
 
-void CLSBlack(void)
-{
-    g_ptDispOpr->CleanScreen(0x000000);
-}
-
 int ShowOnePage(unsigned char * pucTextFileMemCurPos)
 {
     int iLen;
@@ -367,7 +375,14 @@ int ShowOnePage(unsigned char * pucTextFileMemCurPos)
     return 0;
 }
 
-static void RecordPage(PT_PageDesc ptPageNew)
+int SCLBlack(void)
+{
+    g_ptDispOpr->CleanScreen(0x000000);
+    return 0;
+}
+
+static void
+RecordPage(PT_PageDesc ptPageNew)
 {
     PT_PageDesc ptPage;
 
