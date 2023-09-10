@@ -2,7 +2,6 @@
 #include "../include/config.h"
 #include <bits/pthreadtypes.h>
 #include <pthread.h>
-#include <string.h>
 
 static PT_InputOpr g_ptInputOprHead;
 static T_InputEvent g_tInputEvent;
@@ -45,6 +44,35 @@ void ShowInputOpr(void)
     }
 }
 
+static void * InputEventThreadFunction(void * pVoid)
+{
+    T_InputEvent tInputEvent;
+
+    /* 定义函数指针 */
+    int (*GetInputEvent)(PT_InputEvent ptInputEvent);
+    GetInputEvent = (int (*)(PT_InputEvent))pVoid;
+
+    while (1)
+    {
+        if (GetInputEvent(&tInputEvent) == 0)
+        {
+            /* 唤醒主线程,把tInputEvent的值赋给一个全局变量 */
+            /* 访问临界资源前,先获得互斥量 */
+            pthread_mutex_lock(&g_tMutex);
+
+            g_tInputEvent = tInputEvent;
+
+            // 唤醒主线程
+            pthread_cond_signal(&g_tConVar);
+
+            // 唤醒互斥量
+            pthread_mutex_unlock(&g_tMutex);
+        }
+    }
+
+    return NULL;
+}
+
 int AllInputDevicesInit(void)
 {
     PT_InputOpr ptTmp = g_ptInputOprHead;
@@ -54,6 +82,9 @@ int AllInputDevicesInit(void)
     {
         if (0 == ptTmp->DeviceInit())
         {
+            /* 创建子线程 */
+            pthread_create(&ptTmp->tTreadID, NULL, InputEventThreadFunction, ptTmp->GetInputEvent);
+
             iError = 0;
         }
         ptTmp = ptTmp->ptNext;
@@ -63,19 +94,15 @@ int AllInputDevicesInit(void)
 
 int GetInputEvent(PT_InputEvent ptInputEvent)
 {
-    /* 把链表中的InputOpr的GetInputEvent都调用一次,一旦有数据即返回 */
+    /* 休眠 */
+    pthread_mutex_lock(&g_tMutex);
+    pthread_cond_wait(&g_tConVar, &g_tMutex);
 
-    PT_InputOpr ptTmp = g_ptInputOprHead;
+    /* 被唤醒后,返回数据*/
+    *ptInputEvent = g_tInputEvent;
+    pthread_mutex_unlock(&g_tMutex);
 
-    while (ptTmp)
-    {
-        if (0 == ptTmp->GetInputEvent(ptInputEvent))
-        {
-            return 0;
-        }
-        ptTmp = ptTmp->ptNext;
-    }
-    return -1;
+    return 0;
 }
 
 int InputInit(void)
