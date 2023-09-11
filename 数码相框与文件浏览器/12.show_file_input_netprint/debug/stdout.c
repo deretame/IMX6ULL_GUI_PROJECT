@@ -1,9 +1,9 @@
 #include "../include/config.h"
 #include "../include/debug_manager.h"
-#include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
-static int StdoutDbgPrint(const char * pcFormat, ...);
+static int StdoutDbgPrint(char * strData);
 
 static T_DebugOPr g_tStdoutDebgOpr = {
     .name       = "stdout",
@@ -11,17 +11,11 @@ static T_DebugOPr g_tStdoutDebgOpr = {
     .DebugPrint = StdoutDbgPrint,
 };
 
-static int StdoutDbgPrint(const char * pcFormat, ...)
+static int StdoutDbgPrint(char * strData)
 {
     /* 直接把输出信息用printf打印即可 */
-    va_list tArgs;
-    int iNum;
-
-    va_start(tArgs, pcFormat);
-    iNum = vfprintf(stdout, pcFormat, tArgs);
-    va_end(tArgs);
-
-    return iNum;
+    printf("%s", strData);
+    return strlen(strData);
 }
 
 int StdoutInit(void)

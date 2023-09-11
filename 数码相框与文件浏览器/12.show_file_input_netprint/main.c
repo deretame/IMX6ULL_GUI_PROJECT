@@ -1,4 +1,5 @@
 #include "include/config.h"
+#include "include/debug_manager.h"
 #include "include/disp_manager.h"
 #include "include/draw.h"
 #include "include/encoding_manager.h"
@@ -64,8 +65,8 @@ int main(int argc, char ** argv)
         }
         default:
         {
-            printf("Usage: %s [-s Size] [-d display] [-f font_file] [-h HZK] <text_file>\n", argv[0]);
-            printf("Usage: %s -l\n", argv[0]);
+            DebugPrint("Usage: %s [-s Size] [-d display] [-f font_file] [-h HZK] <text_file>\n", argv[0]);
+            DebugPrint("Usage: %s -l\n", argv[0]);
             return -1;
             break;
         }
@@ -74,55 +75,67 @@ int main(int argc, char ** argv)
 
     if (!bList && (optind >= argc))
     {
-        printf("Usage: %s [-s Size] [-d display] [-f font_file] [-h HZK] <text_file>\n", argv[0]);
-        printf("Usage: %s -l\n", argv[0]);
+        DebugPrint("Usage: %s [-s Size] [-d display] [-f font_file] [-h HZK] <text_file>\n", argv[0]);
+        DebugPrint("Usage: %s -l\n", argv[0]);
         return -1;
     }
 
     iError = DisplayInit();
     if (iError)
     {
-        printf("DisplayInit error!\n");
+        DebugPrint("DisplayInit error!\n");
         return -1;
     }
 
     iError = FontsInit();
     if (iError)
     {
-        printf("FontsInit error!\n");
+        DebugPrint("FontsInit error!\n");
         return -1;
     }
 
     iError = EncodingInit();
     if (iError)
     {
-        printf("EncodingInit error!\n");
+        DebugPrint("EncodingInit error!\n");
+        return -1;
+    }
+
+    iError = DebugInit();
+    if (iError)
+    {
+        DebugPrint("DebugInit error!\n");
         return -1;
     }
 
     iError = InputInit();
     if (iError)
     {
-        printf("InputInit error!\n");
+        DebugPrint("InputInit error!\n");
         return -1;
     }
 
     if (bList)
     {
-        printf("supported display:\n");
+        DebugPrint("supported display:\n");
         ShowDispOpr();
 
-        printf("supported font:\n");
+        DebugPrint("supported font:\n");
         ShowFontOpr();
 
-        printf("supported encoding:\n");
+        DebugPrint("supported encoding:\n");
         ShowEncodingOpr();
 
-        printf("supported input:\n");
+        DebugPrint("supported input:\n");
         ShowInputOpr();
+
+        DebugPrint("supported debug chanel:\n");
+        ShowDebugOpr();
 
         return 0;
     }
+
+    InitDebugChanel();
 
     strncpy(acTextFile, argv[optind], 128);
     acTextFile[127] = '\0';
@@ -130,14 +143,14 @@ int main(int argc, char ** argv)
     iError = OpenTextFile(acTextFile);
     if (iError)
     {
-        printf("OpenTextFile error!\n");
+        DebugPrint("OpenTextFile error!\n");
         return -1;
     }
 
     iError = SetTextDetail(acHzkFile, acFreetypeFile, dwFontSize);
     if (iError)
     {
-        printf("SetTextDetail error!\n");
+        DebugPrint("SetTextDetail error!\n");
         return -1;
     }
 
@@ -146,7 +159,7 @@ int main(int argc, char ** argv)
     iError = SelectAndInitDisplay(acDisplay);
     if (iError)
     {
-        printf("SelectAndInitDisplay error!\n");
+        DebugPrint("SelectAndInitDisplay error!\n");
         return -1;
     }
 
@@ -162,12 +175,12 @@ int main(int argc, char ** argv)
     DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
     if (iError)
     {
-        printf("Error to show first page\n");
+        DebugPrint("Error to show first page\n");
         return -1;
     }
 
-    printf("Enter 'n' to show next page, 'u' to show previous page, 'q' to exit: ");
-    printf("\n");
+    DebugPrint("Enter 'n' to show next page, 'u' to show previous page, 'q' to exit: ");
+    DebugPrint("\n");
 
     while (1)
     {
@@ -177,17 +190,17 @@ int main(int argc, char ** argv)
             if (tInputEvent.iVal == INPUT_VALUE_DOWN)
             {
                 ShowNextPage();
-                printf("\n");
+                DebugPrint("\n");
             }
             else if (tInputEvent.iVal == INPUT_VALUE_UP)
             {
                 ShowPrePage();
-                printf("\n");
+                DebugPrint("\n");
             }
             else if (tInputEvent.iVal == INPUT_VALUE_EXIT)
             {
                 CSLBlack();
-                printf("\n");
+                DebugPrint("\n");
                 return 0;
             }
         }

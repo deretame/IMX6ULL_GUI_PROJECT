@@ -1,5 +1,6 @@
 #include "../include/debug_manager.h"
 #include "../include/config.h"
+#include <stdarg.h>
 #include <string.h>
 
 static PT_DebugOpr g_ptDebugOprHead;
@@ -95,11 +96,73 @@ int SetDbgChanel(char * strBuf)
     }
 }
 
+int DebugPrint(const char * pcFormat, ...)
+{
+    char strTmpBuf[1000];
+    va_list tArgs;
+    char * pcTmp;
+    int iNum;
+    PT_DebugOpr ptTmp = g_ptDebugOprHead;
+    int dbglevel      = DEFAULT_DBGLEVEL;
+
+    va_start(tArgs, pcFormat);
+    iNum = vsprintf(strTmpBuf, pcFormat, tArgs);
+    va_end(tArgs);
+    strTmpBuf[iNum] = '\0';
+
+    pcTmp = strTmpBuf;
+
+    /* 根据打印级别决定是否打印 */
+    if ((strTmpBuf[0] == '<') && (strTmpBuf[0] == '>'))
+    {
+        dbglevel = strTmpBuf[1] - '0';
+        if (dbglevel >= 0 && dbglevel <= 8)
+        {
+            pcTmp = strTmpBuf + 3;
+        }
+        {
+            dbglevel = DEFAULT_DBGLEVEL;
+        }
+    }
+
+    if (dbglevel > g_iDbgLevelLimint)
+    {
+        return -1;
+    }
+
+    /* 调用链表中所有isCanUse为1的结构体的DebugPrint函数 */
+    while (ptTmp)
+    {
+        if (ptTmp->isCanUse)
+        {
+            ptTmp->DebugPrint(strTmpBuf);
+        }
+        ptTmp = ptTmp->ptNext;
+    }
+
+    return 0;
+}
+
 int DebugInit(void)
 {
     int iError;
 
     iError = StdoutInit();
-
+    iError |= NetPrintInit();
     return iError;
+}
+
+int InitDebugChanel(void)
+{
+    PT_DebugOpr ptTmp = g_ptDebugOprHead;
+    while (ptTmp)
+    {
+        if (ptTmp->isCanUse && ptTmp->DebugInit)
+        {
+            ptTmp->DebugInit();
+        }
+        ptTmp = ptTmp->ptNext;
+    }
+
+    return 0;
 }

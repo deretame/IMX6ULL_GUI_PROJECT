@@ -4,7 +4,6 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include <signal.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +18,6 @@ static int g_iSocketServer;
 static struct sockaddr_in g_tSocketServerAddr;
 static struct sockaddr_in g_tSocketClientAddr;
 static char * g_pcNetPrintBuf;
-static char * g_pcBufTmp;
 static int g_iHaveConnected = 0;
 static int g_iReadPos       = 0;
 static int g_iWritePos      = 0;
@@ -32,7 +30,7 @@ static pthread_cond_t g_tNetDbgSendConVar = PTHREAD_COND_INITIALIZER;
 
 static int NetDbgInit(void);
 static int NetDbgExit(void);
-static int NetDbgPrint(const char * pcFormat, ...);
+static int NetDbgPrint(char * strData);
 static int GetDate(char * pcVal);
 static int NetDbgInit(void);
 static int NetDbgExit(void);
@@ -157,14 +155,6 @@ static int NetDbgInit(void)
         return -1;
     }
 
-    g_pcBufTmp = malloc(1 * 1024);
-    if (g_pcBufTmp == NULL)
-    {
-        close(g_iSocketServer);
-        free(g_pcBufTmp);
-        return -1;
-    }
-
     /* 创建netprint发送线程:它用来发送打印消息给客户端 */
     pthread_create(&g_tSendTreadID, NULL, NetDbgSendThreadFunction, NULL);
 
@@ -179,7 +169,6 @@ static int NetDbgExit(void)
     /* 关闭socket,... */
     close(g_iSocketServer);
     free(g_pcNetPrintBuf);
-    free(g_pcBufTmp);
     return 0;
 }
 
@@ -218,20 +207,14 @@ static int GetDate(char * pcVal)
     }
 }
 
-static int NetDbgPrint(const char * pcFormat, ...)
+static int NetDbgPrint(char * strData)
 {
     /* 把数据放入环形缓冲区 */
-    va_list tArgs;
-    int iNum;
     int i;
 
-    va_start(tArgs, pcFormat);
-    iNum = vfprintf(stdout, pcFormat, tArgs);
-    va_end(tArgs);
-
-    for (i = 0; i < iNum; i++)
+    for (i = 0; i < strlen(strData); i++)
     {
-        if (PutData(g_pcBufTmp[i]) != 0)
+        if (PutData(strData[i]) != 0)
             break;
     }
 
@@ -239,7 +222,7 @@ static int NetDbgPrint(const char * pcFormat, ...)
     /* 唤醒netprint的发送线程 */
     pthread_cond_signal(&g_tNetDbgSendConVar);
 
-    return iNum;
+    return i;
 }
 
 int NetPrintInit(void)
