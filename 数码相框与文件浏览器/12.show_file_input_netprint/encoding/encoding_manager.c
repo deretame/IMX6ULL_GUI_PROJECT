@@ -1,8 +1,8 @@
 #include "../include/encoding_manager.h"
 #include "../include/config.h"
+#include "../include/debug_manager.h"
 #include <stdlib.h>
 #include <string.h>
-
 
 static PT_EncodingOpr g_ptEncodingOprHead;
 
@@ -129,28 +129,28 @@ int EncodingInit(void)
     iError = AsciiEncodingInit();
     if (iError)
     {
-        DBG_PRINTF("AsciiEncodingInit error!\n");
+        DebugPrint("AsciiEncodingInit error!\n");
         return -1;
     }
 
     iError = Utf16leEncodingInit();
     if (iError)
     {
-        DBG_PRINTF("Utf16leEncodingInit error!\n");
+        DebugPrint("Utf16leEncodingInit error!\n");
         return -1;
     }
 
     iError = Utf16beEncodingInit();
     if (iError)
     {
-        DBG_PRINTF("Utf16beEncodingInit error!\n");
+        DebugPrint("Utf16beEncodingInit error!\n");
         return -1;
     }
 
     iError = Utf8EncodingInit();
     if (iError)
     {
-        DBG_PRINTF("Utf8EncodingInit error!\n");
+        DebugPrint("Utf8EncodingInit error!\n");
         return -1;
     }
 

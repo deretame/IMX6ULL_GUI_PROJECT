@@ -52,7 +52,6 @@ static void * NetDbgSendThreadFunction(void * pVoid)
     char cVal;
     int i;
     int iAddrLen;
-    int iSendLen;
 
     while (1)
     {
@@ -74,7 +73,7 @@ static void * NetDbgSendThreadFunction(void * pVoid)
             /* 执行到这里表示被唤醒 */
             /* 用sendto函数打印给客户端 */
             iAddrLen = sizeof(struct sockaddr);
-            iSendLen = sendto(g_iSocketServer, strTmpBuf, i, 0, (const struct sockaddr *)&g_tSocketClientAddr, iAddrLen);
+            sendto(g_iSocketServer, strTmpBuf, i, 0, (const struct sockaddr *)&g_tSocketClientAddr, iAddrLen);
         }
         pthread_mutex_unlock(&g_tNetDbgSendMutex);
     }

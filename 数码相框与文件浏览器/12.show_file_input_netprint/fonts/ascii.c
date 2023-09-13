@@ -4628,7 +4628,7 @@ static int ASCIIFontInit(char * pcFontFile, unsigned int dwFontSize)
 {
     if (dwFontSize != 16)
     {
-        // DBG_PRINTF("ASCII can't support %d font size\n", dwFontSize);
+        // DebugPrint("ASCII can't support %d font size\n", dwFontSize);
         return -1;
     }
     return 0;
@@ -4641,7 +4641,7 @@ static int ASCIIGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
 
     if (dwCode > (unsigned int)0x80)
     {
-        // DBG_PRINTF("don't support this code : 0x%x\n", dwCode);
+        // DebugPrint("don't support this code : 0x%x\n", dwCode);
         return -1;
     }
 

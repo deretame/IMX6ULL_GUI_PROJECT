@@ -135,7 +135,7 @@ int DebugPrint(const char * pcFormat, ...)
     {
         if (ptTmp->isCanUse)
         {
-            ptTmp->DebugPrint(strTmpBuf);
+            ptTmp->DebugPrint(pcTmp);
         }
         ptTmp = ptTmp->ptNext;
     }

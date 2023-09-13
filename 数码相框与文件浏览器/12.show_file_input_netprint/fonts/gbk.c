@@ -1,4 +1,5 @@
 #include "../include/config.h"
+#include "../include/debug_manager.h"
 #include "../include/fonts_manager.h"
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -25,25 +26,25 @@ static int GBKFontInit(char * pcFontFile, unsigned int dwFontSize)
 
     if (16 != dwFontSize)
     {
-        DBG_PRINTF("GBK can't support %d fontsize\n", dwFontSize);
+        DebugPrint("GBK can't support %d fontsize\n", dwFontSize);
         return -1;
     }
 
     g_iFdHZK = open(pcFontFile, O_RDONLY);
     if (g_iFdHZK < 0)
     {
-        DBG_PRINTF("can't open %s\n", pcFontFile);
+        DebugPrint("can't open %s\n", pcFontFile);
         return -1;
     }
     if (fstat(g_iFdHZK, &tStat))
     {
-        DBG_PRINTF("can't get fstat\n");
+        DebugPrint("can't get fstat\n");
         return -1;
     }
     g_pucHZKMem = (unsigned char *)mmap(NULL, tStat.st_size, PROT_READ, MAP_SHARED, g_iFdHZK, 0);
     if (g_pucHZKMem == (unsigned char *)-1)
     {
-        DBG_PRINTF("can't mmap for hzk16\n");
+        DebugPrint("can't mmap for hzk16\n");
         return -1;
     }
     g_pucHZKMemEnd = g_pucHZKMem + tStat.st_size;
@@ -58,11 +59,11 @@ static int GBKGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
     int iPenX = ptFontBitMap->iCurOriginX;
     int iPenY = ptFontBitMap->iCurOriginY;
 
-    DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 
     if (dwCode & 0xffff0000)
     {
-        DBG_PRINTF("don't support this code : 0x%x\n", dwCode);
+        DebugPrint("don't support this code : 0x%x\n", dwCode);
         return -1;
     }
 
@@ -71,7 +72,7 @@ static int GBKGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
 
     if ((iArea < 0) || (iWhere < 0))
     {
-        DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+        DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
         return -1;
     }
 
@@ -92,7 +93,7 @@ static int GBKGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
     ptFontBitMap->iNextOriginX = iPenX + 16;
     ptFontBitMap->iNextOriginY = iPenY;
 
-    DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
     return 0;
 }
 

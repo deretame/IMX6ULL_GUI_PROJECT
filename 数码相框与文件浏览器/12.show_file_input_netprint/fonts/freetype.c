@@ -1,6 +1,8 @@
 #include "../include/config.h"
+#include "../include/debug_manager.h"
 #include "../include/fonts_manager.h"
 #include <ft2build.h>
+
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
@@ -26,7 +28,7 @@ static int FreeTypeFontInit(char * pcFontFile, unsigned int dwFontSize)
     /* error handling omitted */
     if (iError)
     {
-        DBG_PRINTF("FT_Init_FreeType failed\n");
+        DebugPrint("FT_Init_FreeType failed\n");
         return -1;
     }
 
@@ -34,7 +36,7 @@ static int FreeTypeFontInit(char * pcFontFile, unsigned int dwFontSize)
     /* error handling omitted */
     if (iError)
     {
-        DBG_PRINTF("FT_Init_FreeType failed\n");
+        DebugPrint("FT_Init_FreeType failed\n");
         return -1;
     }
 
@@ -43,7 +45,7 @@ static int FreeTypeFontInit(char * pcFontFile, unsigned int dwFontSize)
     iError = FT_Set_Pixel_Sizes(g_tFace, dwFontSize, 0);
     if (iError)
     {
-        DBG_PRINTF("FT_Set_Pixel_Sizes failed : %d\n", dwFontSize);
+        DebugPrint("FT_Set_Pixel_Sizes failed : %d\n", dwFontSize);
         return -1;
     }
 
@@ -70,11 +72,11 @@ static int FreeTypeGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap
     iError = FT_Load_Char(g_tFace, dwCode, FT_LOAD_RENDER | FT_LOAD_MONOCHROME);
     if (iError)
     {
-        DBG_PRINTF("FT_Load_Char error for code : 0x%x\n", dwCode);
+        DebugPrint("FT_Load_Char error for code : 0x%x\n", dwCode);
         return -1;
     }
 
-    // DBG_PRINTF("iPenX = %d, iPenY = %d, bitmap_left = %d, bitmap_top = %d, width = %d, rows = %d\n", iPenX, iPenY, g_tSlot->bitmap_left, g_tSlot->bitmap_top, g_tSlot->bitmap.width, g_tSlot->bitmap.rows);
+    // DebugPrint("iPenX = %d, iPenY = %d, bitmap_left = %d, bitmap_top = %d, width = %d, rows = %d\n", iPenX, iPenY, g_tSlot->bitmap_left, g_tSlot->bitmap_top, g_tSlot->bitmap.width, g_tSlot->bitmap.rows);
     ptFontBitMap->iXLeft    = iPenX + g_tSlot->bitmap_left;
     ptFontBitMap->iYTop     = iPenY - g_tSlot->bitmap_top;
     ptFontBitMap->iXMax     = ptFontBitMap->iXLeft + g_tSlot->bitmap.width;
@@ -86,7 +88,7 @@ static int FreeTypeGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap
     ptFontBitMap->iNextOriginX = iPenX + g_tSlot->advance.x / 64;
     ptFontBitMap->iNextOriginY = iPenY;
 
-    // DBG_PRINTF("iXLeft = %d, iYTop = %d, iXMax = %d, iYMax = %d, iNextOriginX = %d, iNextOriginY = %d\n", ptFontBitMap->iXLeft, ptFontBitMap->iYTop, ptFontBitMap->iXMax, ptFontBitMap->iYMax, ptFontBitMap->iNextOriginX, ptFontBitMap->iNextOriginY);
+    // DebugPrint("iXLeft = %d, iYTop = %d, iXMax = %d, iYMax = %d, iNextOriginX = %d, iNextOriginY = %d\n", ptFontBitMap->iXLeft, ptFontBitMap->iYTop, ptFontBitMap->iXMax, ptFontBitMap->iYMax, ptFontBitMap->iNextOriginX, ptFontBitMap->iNextOriginY);
 
     return 0;
 }

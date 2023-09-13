@@ -1,7 +1,7 @@
 #include "../include/fonts_manager.h"
 #include "../include/config.h"
+#include "../include/debug_manager.h"
 #include <string.h>
-
 
 static PT_FontOpr g_ptFontOprHead = NULL;
 
@@ -62,21 +62,21 @@ int FontsInit(void)
     iError = ASCIIInit();
     if (iError)
     {
-        DBG_PRINTF("ASCIIInit error!\n");
+        DebugPrint("ASCIIInit error!\n");
         return -1;
     }
 
     iError = GBKInit();
     if (iError)
     {
-        DBG_PRINTF("GBKInit error!\n");
+        DebugPrint("GBKInit error!\n");
         return -1;
     }
 
     iError = FreeTypeInit();
     if (iError)
     {
-        DBG_PRINTF("FreeTypeInit error!\n");
+        DebugPrint("FreeTypeInit error!\n");
         return -1;
     }
 

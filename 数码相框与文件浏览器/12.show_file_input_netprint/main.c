@@ -154,7 +154,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 
     iError = SelectAndInitDisplay(acDisplay);
     if (iError)
@@ -166,13 +166,13 @@ int main(int argc, char ** argv)
     iError = AllInputDevicesInit();
     if (iError)
     {
-        DBG_PRINTF("Error AllInputDevicesInit\n");
+        DebugPrint("Error AllInputDevicesInit\n");
         return -1;
     }
 
-    DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
     iError = ShowNextPage();
-    DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
     if (iError)
     {
         DebugPrint("Error to show first page\n");

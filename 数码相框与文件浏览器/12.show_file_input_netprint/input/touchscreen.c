@@ -1,4 +1,5 @@
 #include "../include/config.h"
+#include "../include/debug_manager.h"
 #include "../include/draw.h"
 #include "../include/input_manager.h"
 #include <stdlib.h>
@@ -26,13 +27,13 @@ static int TouchScreenDevInit(void)
 
     if (!g_tTSDev)
     {
-        DBG_PRINTF("ts_open error!\n");
+        DebugPrint("ts_open error!\n");
         return -1;
     }
 
     if (ts_config(g_tTSDev))
     {
-        DBG_PRINTF("ts_config error!\n");
+        DebugPrint("ts_config error!\n");
         return -1;
     }
 

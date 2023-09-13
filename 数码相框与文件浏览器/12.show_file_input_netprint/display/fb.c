@@ -1,4 +1,5 @@
 #include "../include/config.h"
+#include "../include/debug_manager.h"
 #include "../include/disp_manager.h"
 #include <fcntl.h>
 #include <linux/fb.h>
@@ -7,7 +8,6 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
 
 static int FBDeviceInit(void);
 static int FBShowPixel(int iX, int iY, unsigned int dwColor);
@@ -37,20 +37,20 @@ static int FBDeviceInit(void)
     g_fd = open(FB_DEVICE_NAME, O_RDWR);
     if (0 > g_fd)
     {
-        DBG_PRINTF("can't open %s\n", FB_DEVICE_NAME);
+        DebugPrint("can't open %s\n", FB_DEVICE_NAME);
     }
 
     ret = ioctl(g_fd, FBIOGET_VSCREENINFO, &g_tFBVar);
     if (ret < 0)
     {
-        DBG_PRINTF("can't get fb's var\n");
+        DebugPrint("can't get fb's var\n");
         return -1;
     }
 
     ret = ioctl(g_fd, FBIOGET_FSCREENINFO, &g_tFBFix);
     if (ret < 0)
     {
-        DBG_PRINTF("can't get fb's fix\n");
+        DebugPrint("can't get fb's fix\n");
         return -1;
     }
 
@@ -58,7 +58,7 @@ static int FBDeviceInit(void)
     g_pucFBMem     = (unsigned char *)mmap(NULL, g_dwScreenSize, PROT_READ | PROT_WRITE, MAP_SHARED, g_fd, 0);
     if (0 > g_pucFBMem)
     {
-        DBG_PRINTF("can't mmap\n");
+        DebugPrint("can't mmap\n");
         return -1;
     }
 
@@ -84,7 +84,7 @@ static int FBShowPixel(int iX, int iY, unsigned int dwColor)
 
     if ((iX >= g_tFBVar.xres) || (iY >= g_tFBVar.yres))
     {
-        DBG_PRINTF("out of region\n");
+        DebugPrint("out of region\n");
         return -1;
     }
 
@@ -115,7 +115,7 @@ static int FBShowPixel(int iX, int iY, unsigned int dwColor)
     }
     default:
     {
-        DBG_PRINTF("can't support %d bpp\n", g_tFBVar.bits_per_pixel);
+        DebugPrint("can't support %d bpp\n", g_tFBVar.bits_per_pixel);
         return -1;
     }
     }
@@ -171,7 +171,7 @@ static int FBCleanScreen(unsigned int dwBackColor)
     }
     default:
     {
-        DBG_PRINTF("can't support %d bpp\n", g_tFBVar.bits_per_pixel);
+        DebugPrint("can't support %d bpp\n", g_tFBVar.bits_per_pixel);
         return -1;
     }
     }

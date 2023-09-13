@@ -8,7 +8,7 @@
 #define COLOR_BACKGROUND 0xE7DBB5 /* ???? */
 #define COLOR_FOREGROUND 0x514438 /* ???? */
 
-// #define DBG_PRINTF(...)
-#define DBG_PRINTF       DebugPrint
+// #define DebugPrint(...)
+// #define DebugPrint       DebugPrint
 
 #endif /* _CONFIG_H */

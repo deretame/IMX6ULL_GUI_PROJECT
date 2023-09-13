@@ -1,5 +1,6 @@
 #include "../include/draw.h"
 #include "../include/config.h"
+#include "../include/debug_manager.h"
 #include "../include/disp_manager.h"
 #include "../include/encoding_manager.h"
 #include "../include/fonts_manager.h"
@@ -42,19 +43,19 @@ int OpenTextFile(char * pcFileName)
     g_iFdTextFile = open(pcFileName, O_RDONLY);
     if (0 > g_iFdTextFile)
     {
-        DBG_PRINTF("can't open text file %s\n", pcFileName);
+        DebugPrint("can't open text file %s\n", pcFileName);
         return -1;
     }
 
     if (fstat(g_iFdTextFile, &tStat))
     {
-        DBG_PRINTF("can't get fstat\n");
+        DebugPrint("can't get fstat\n");
         return -1;
     }
     g_pucTextFileMem = (unsigned char *)mmap(NULL, tStat.st_size, PROT_READ, MAP_SHARED, g_iFdTextFile, 0);
     if (g_pucTextFileMem == (unsigned char *)-1)
     {
-        DBG_PRINTF("can't mmap for text file\n");
+        DebugPrint("can't mmap for text file\n");
         return -1;
     }
 
@@ -98,7 +99,7 @@ int SetTextDetail(char * pcHZKFile, char * pcFileFreetype, unsigned int dwFontSi
             iError = ptFontOpr->FontInit(pcFileFreetype, dwFontSize);
         }
 
-        DBG_PRINTF("%s, %d\n", ptFontOpr->name, iError);
+        DebugPrint("%s, %d\n", ptFontOpr->name, iError);
 
         ptTmp = ptFontOpr->ptNext;
 
@@ -258,7 +259,7 @@ int ShowOneFont(PT_FontBitMap ptFontBitMap)
     }
     else
     {
-        DBG_PRINTF("ShowOneFont error, can't support %d bpp\n", ptFontBitMap->iBpp);
+        DebugPrint("ShowOneFont error, can't support %d bpp\n", ptFontBitMap->iBpp);
         return -1;
     }
     return 0;
@@ -330,23 +331,23 @@ int ShowOnePage(unsigned char * pucTextFileMemCurPos)
             dwCode = ' ';
         }
 
-        DBG_PRINTF("dwCode = 0x%x\n", dwCode);
+        DebugPrint("dwCode = 0x%x\n", dwCode);
 
         ptFontOpr = g_ptEncodingOprForFile->ptFontOprSupportedHead;
         while (ptFontOpr)
         {
-            DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+            DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
             iError = ptFontOpr->GetFontBitmap(dwCode, &tFontBitMap);
-            DBG_PRINTF("%s %s %d, ptFontOpr->name = %s, %d\n", __FILE__, __FUNCTION__, __LINE__, ptFontOpr->name, iError);
+            DebugPrint("%s %s %d, ptFontOpr->name = %s, %d\n", __FILE__, __FUNCTION__, __LINE__, ptFontOpr->name, iError);
             if (0 == iError)
             {
-                DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+                DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
                 if (RelocateFontPos(&tFontBitMap))
                 {
                     /* 剩下的LCD空间不能满足显示这个字符 */
                     return 0;
                 }
-                DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+                DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 
                 if (bHasNotClrSceen)
                 {
@@ -354,7 +355,7 @@ int ShowOnePage(unsigned char * pucTextFileMemCurPos)
                     g_ptDispOpr->CleanScreen(COLOR_BACKGROUND);
                     bHasNotClrSceen = 0;
                 }
-                DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+                DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
                 /* 显示一个字符 */
                 if (ShowOneFont(&tFontBitMap))
                 {
@@ -416,7 +417,7 @@ int ShowNextPage(void)
         pucTextFileMemCurPos = g_pucLcdFirstPosAtFile;
     }
     iError = ShowOnePage(pucTextFileMemCurPos);
-    DBG_PRINTF("%s %d, %d\n", __FUNCTION__, __LINE__, iError);
+    DebugPrint("%s %d, %d\n", __FUNCTION__, __LINE__, iError);
     if (iError == 0)
     {
         if (g_ptCurPage && g_ptCurPage->ptNextPage)
@@ -433,7 +434,7 @@ int ShowNextPage(void)
             ptPage->ptPrePage                    = NULL;
             ptPage->ptNextPage                   = NULL;
             g_ptCurPage                          = ptPage;
-            DBG_PRINTF("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)ptPage->pucLcdFirstPosAtFile);
+            DebugPrint("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)ptPage->pucLcdFirstPosAtFile);
             RecordPage(ptPage);
             return 0;
         }
@@ -449,17 +450,17 @@ int ShowPrePage(void)
 {
     int iError;
 
-    DBG_PRINTF("%s %d\n", __FUNCTION__, __LINE__);
+    DebugPrint("%s %d\n", __FUNCTION__, __LINE__);
     if (!g_ptCurPage || !g_ptCurPage->ptPrePage)
     {
         return -1;
     }
 
-    DBG_PRINTF("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)g_ptCurPage->ptPrePage->pucLcdFirstPosAtFile);
+    DebugPrint("%s %d, pos = 0x%x\n", __FUNCTION__, __LINE__, (unsigned int)g_ptCurPage->ptPrePage->pucLcdFirstPosAtFile);
     iError = ShowOnePage(g_ptCurPage->ptPrePage->pucLcdFirstPosAtFile);
     if (iError == 0)
     {
-        DBG_PRINTF("%s %d\n", __FUNCTION__, __LINE__);
+        DebugPrint("%s %d\n", __FUNCTION__, __LINE__);
         g_ptCurPage = g_ptCurPage->ptPrePage;
     }
     return iError;
