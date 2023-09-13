@@ -1,0 +1,31 @@
+---- iNextOriginX Matches (6 in 5 files) ----
+Ascii.c (fonts):	ptFontBitMap->iNextOriginX = iPenX + 8;
+Draw.c (draw):			ptFontBitMap->iNextOriginX += iDeltaX;
+Draw.c (draw):				tFontBitMap.iCurOriginX = tFontBitMap.iNextOriginX;
+Fonts_manager.h (include):	int iNextOriginX;
+Freetype.c (fonts):	ptFontBitMap->iNextOriginX = iPenX + g_tSlot->advance.x / 64;
+Gbk.c (fonts):	ptFontBitMap->iNextOriginX = iPenX + 16;
+---- ShowNextPage Matches (4 in 3 files) ----
+Draw.c (draw):int ShowNextPage(void)
+Draw.h (include):int ShowNextPage(void);
+Main.c:	iError = ShowNextPage();
+Main.c:				ShowNextPage();
+---- free Matches (3 in 2 files) ----
+Encoding_manager.c (encoding):			free(ptTmp);
+Encoding_manager.c (encoding):				free(ptTmp);
+Netprint.c (debug):	free(g_pcNetPrintBuf);
+---- pthread_create Matches (3 in 2 files) ----
+Input_manager.c (input):			pthread_create(&ptTmp->tTreadID, NULL, InputEventTreadFunction, ptTmp->GetInputEvent);			
+Netprint.c (debug):	pthread_create(&g_tSendTreadID, NULL, NetDbgSendTreadFunction, NULL);			
+Netprint.c (debug):	pthread_create(&g_tRecvTreadID, NULL, NetDbgRecvTreadFunction, NULL);			
+---- pthread Matches (2 in 2 files) ----
+Input_manager.h (include):#include <pthread.h>
+Netprint.c (debug):#include <pthread.h>
+---- isCanUse Matches (7 in 4 files) ----
+Debug_manager.c (debug):			ptTmp->isCanUse = 0;
+Debug_manager.c (debug):			ptTmp->isCanUse = 1;
+Debug_manager.c (debug):		if (ptTmp->isCanUse)
+Debug_manager.c (debug):		if (ptTmp->isCanUse && ptTmp->DebugInit)
+Debug_manager.h (include):	int isCanUse;
+Netprint.c (debug):	.isCanUse   = 1,
+Stdout.c (debug):	.isCanUse   = 1,
