@@ -12,6 +12,17 @@ static T_EncodingOpr g_tUtf8EncodingOpr = {
     .GetCodeFrmBuf = Utf8GetCodeFrmBuf,
 };
 
+/**********************************************************************
+ * 函数名称： isUtf8Coding
+ * 功能描述： 判断缓冲区中数据的编码方式是否为UTF8
+ * 输入参数： pucBufHead - 缓冲区首地址,一般是文本文件经过mmap得到的缓冲区地址
+ * 输出参数： 无
+ * 返 回 值： 0 - 不是
+ *            1 - 是
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int isUtf8Coding(unsigned char * pucBufHead)
 {
     const char aStrUtf8[] = {0xEF, 0xBB, 0xBF, 0};
@@ -26,10 +37,19 @@ static int isUtf8Coding(unsigned char * pucBufHead)
     }
 }
 
-/* 获得前导为1的位的个数
- * 比如二进制数 11001111 的前导1有2位
- *              11100001 的前导1有3位
- */
+/**********************************************************************
+ * 函数名称： GetPreOneBits
+ * 功能描述： 获得"从bit7开始为1的位的个数"
+ *            比如二进制数 11001111 有2位
+ *                         11100001 有3位
+ *                         01100001 有0位
+ * 输入参数： ucVal - 要分析的数
+ * 输出参数： 无
+ * 返 回 值： "从bit7开始为1的位的个数"
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int GetPreOneBits(unsigned char ucVal)
 {
     int i;
@@ -45,6 +65,18 @@ static int GetPreOneBits(unsigned char ucVal)
     return j;
 }
 
+/**********************************************************************
+ * 函数名称： Utf8GetCodeFrmBuf
+ * 功能描述： 从缓冲区中取出第1个字符的UTF8编码并且转换为UNICODE值
+ * 输入参数： pucBufStart - 缓冲区起始地址
+ *            pucBufEnd   - 缓冲区结束地址(这个位置的字符不处理)
+ * 输出参数： pdwCode     - 所取出的编码值存在这里
+ * 返 回 值： 0      - 缓冲区处理完毕,没有得到编码值
+ *            其他值 - 从pucBufStart开始用到了多少个字符才取得这个编码值
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int Utf8GetCodeFrmBuf(unsigned char * pucBufStart, unsigned char * pucBufEnd, unsigned int * pdwCode)
 {
 #if 0
@@ -102,6 +134,19 @@ static int Utf8GetCodeFrmBuf(unsigned char * pucBufStart, unsigned char * pucBuf
     }
 }
 
+/**********************************************************************
+ * 函数名称： Utf8EncodingInit
+ * 功能描述： 根据字符的UNICODE编码值,有freetype/ascii这2种方法获得它的字符位图
+ *            Utf8EncodingInit先给g_tUtf8EncodingOpr添加freetype/ascii这2种PT_FontOpr结构体;
+ *            最后注册g_tUtf8EncodingOpr
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0      - 成功
+ *            其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int Utf8EncodingInit(void)
 {
     AddFontOprForEncoding(&g_tUtf8EncodingOpr, GetFontOpr("freetype"));

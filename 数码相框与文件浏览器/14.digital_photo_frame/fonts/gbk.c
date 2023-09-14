@@ -19,6 +19,17 @@ static int g_iFdHZK;
 static unsigned char * g_pucHZKMem;
 static unsigned char * g_pucHZKMemEnd;
 
+/**********************************************************************
+ * 函数名称： GBKFontInit
+ * 功能描述： GBK字体模块的初始化函数
+ * 输入参数： pcFontFile - GBK字库文件
+ *            dwFontSize - 字符尺寸,必须是16,否则失败(因为我们只有16x16位图)
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int GBKFontInit(char * pcFontFile, unsigned int dwFontSize)
 {
     struct stat tStat;
@@ -50,6 +61,17 @@ static int GBKFontInit(char * pcFontFile, unsigned int dwFontSize)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： GBKGetFontBitmap
+ * 功能描述： 获得GBK字符的位图
+ * 输入参数： dwCode       - 字符的GBK编码值
+ * 输出参数： ptFontBitMap - 内含位图信息
+ * 返 回 值： 0  - 成功
+ *            -1 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int GBKGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
 {
     int iArea;
@@ -96,6 +118,16 @@ static int GBKGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： GBKInit
+ * 功能描述： 注册"GBK字体模块"
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int GBKInit(void)
 {
     return RegisterFontOpr(&g_tGBKFontOpr);

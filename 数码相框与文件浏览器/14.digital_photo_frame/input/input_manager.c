@@ -1,8 +1,6 @@
-
 #include "../include/input_manager.h"
 #include "../include/config.h"
 #include <string.h>
-
 
 static PT_InputOpr g_ptInputOprHead;
 static T_InputEvent g_tInputEvent;
@@ -10,6 +8,16 @@ static T_InputEvent g_tInputEvent;
 static pthread_mutex_t g_tMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t g_tConVar = PTHREAD_COND_INITIALIZER;
 
+/**********************************************************************
+ * 函数名称： RegisterInputOpr
+ * 功能描述： 注册"输入模块"
+ * 输入参数： ptInputOpr - 输入模块的结构体指针
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int RegisterInputOpr(PT_InputOpr ptInputOpr)
 {
     PT_InputOpr ptTmp;
@@ -33,6 +41,16 @@ int RegisterInputOpr(PT_InputOpr ptInputOpr)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： ShowInputOpr
+ * 功能描述： 显示本程序能支持的"输入模块"
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 无
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 void ShowInputOpr(void)
 {
     int i             = 0;
@@ -45,7 +63,18 @@ void ShowInputOpr(void)
     }
 }
 
-static void * InputEventTreadFunction(void * pVoid)
+/**********************************************************************
+ * 函数名称： InputEventThreadFunction
+ * 功能描述： "输入模块"的线程函数,每个输入模块都是通过创建子线程来读取输入数据,
+ *            读到数据后它会唤醒等得数据的其他线程
+ * 输入参数： pVoid - 输入模块的"读输入数据函数"
+ * 输出参数： 无
+ * 返 回 值： NULL - 正常退出
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
+static void * InputEventThreadFunction(void * pVoid)
 {
     T_InputEvent tInputEvent;
 
@@ -73,6 +102,17 @@ static void * InputEventTreadFunction(void * pVoid)
     return NULL;
 }
 
+/**********************************************************************
+ * 函数名称： AllInputDevicesInit
+ * 功能描述： 调用所有"输入模块"的设备相关的初始化函数
+ *            并创建用于读取输入数据的子线程
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int AllInputDevicesInit(void)
 {
     PT_InputOpr ptTmp = g_ptInputOprHead;
@@ -83,7 +123,7 @@ int AllInputDevicesInit(void)
         if (0 == ptTmp->DeviceInit())
         {
             /* 创建子线程 */
-            pthread_create(&ptTmp->tTreadID, NULL, InputEventTreadFunction, ptTmp->GetInputEvent);
+            pthread_create(&ptTmp->tTreadID, NULL, InputEventThreadFunction, ptTmp->GetInputEvent);
             iError = 0;
         }
         ptTmp = ptTmp->ptNext;
@@ -91,6 +131,17 @@ int AllInputDevicesInit(void)
     return iError;
 }
 
+/**********************************************************************
+ * 函数名称： GetInputEvent
+ * 功能描述： 获得输入数据,它会使得当前线程休眠,
+ *            当各输入模块的子线程读到数据后会把它唤醒
+ * 输入参数： 无
+ * 输出参数： ptInputEvent - 内含得到的输入数据
+ * 返 回 值： 0 - 成功
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int GetInputEvent(PT_InputEvent ptInputEvent)
 {
     /* 休眠 */
@@ -103,10 +154,20 @@ int GetInputEvent(PT_InputEvent ptInputEvent)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： InputInit
+ * 功能描述： 调用各个输入模块的初始化函数,就是注册各个输入模块
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int InputInit(void)
 {
-    int iError;
-    iError = StdinInit();
+    int iError = 0;
+    // iError = StdinInit();
     iError |= TouchScreenInit();
     return iError;
 }

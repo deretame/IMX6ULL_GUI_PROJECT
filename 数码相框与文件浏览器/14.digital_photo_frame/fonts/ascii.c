@@ -1,4 +1,3 @@
-
 #include "../include/config.h"
 #include "../include/fonts_manager.h"
 
@@ -13,6 +12,7 @@ static T_FontOpr g_tASCIIFontOpr = {
     .GetFontBitmap = ASCIIGetFontBitmap,
 };
 
+/* 8x16大小的ASCII字符位图 */
 static const unsigned char fontdata_8x16[FONTDATAMAX] = {
 
     /* 0 0x00 '^@' */
@@ -4625,6 +4625,17 @@ static const unsigned char fontdata_8x16[FONTDATAMAX] = {
 
 };
 
+/**********************************************************************
+ * 函数名称： ASCIIFontInit
+ * 功能描述： ASCII字体模块的初始化函数
+ * 输入参数： pcFontFile - 未使用
+ *            dwFontSize - 字符尺寸,必须是16,否则失败(因为我们只有8x16位图)
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int ASCIIFontInit(char * pcFontFile, unsigned int dwFontSize)
 {
     if (dwFontSize != 16)
@@ -4635,6 +4646,17 @@ static int ASCIIFontInit(char * pcFontFile, unsigned int dwFontSize)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： ASCIIGetFontBitmap
+ * 功能描述： 获得ASCII字符的位图
+ * 输入参数： dwCode       - 字符的ASCII编码值
+ * 输出参数： ptFontBitMap - 内含位图信息
+ * 返 回 值： 0  - 成功
+ *            -1 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int ASCIIGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
 {
     int iPenX = ptFontBitMap->iCurOriginX;
@@ -4661,6 +4683,16 @@ static int ASCIIGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： ASCIIInit
+ * 功能描述： 注册"ASCII字体模块"
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int ASCIIInit(void)
 {
     return RegisterFontOpr(&g_tASCIIFontOpr);

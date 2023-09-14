@@ -1,9 +1,10 @@
 #include "../include/config.h"
+#include "../include/disp_manager.h"
 #include "../include/input_manager.h"
 #include <stdlib.h>
 
-#include "../include/draw.h"
 #include <tslib.h>
+// #include <draw.h>
 
 /* 参考tslib里的ts_print.c */
 
@@ -11,10 +12,21 @@ static struct tsdev * g_tTSDev;
 static int giXres;
 static int giYres;
 
-/* 注意: 由于要用到LCD的分辨率, 此函数要在SelectAndInitDisplay之后调用 */
+/**********************************************************************
+ * 函数名称： TouchScreenDevInit
+ * 功能描述： 触摸屏输入模块的设备初始化函数
+ *            注意: 由于要用到LCD的分辨率, 此函数要在SelectAndInitDisplay之后才能调用
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int TouchScreenDevInit(void)
 {
     char * pcTSName = NULL;
+    int iBpp;
 
     if ((pcTSName = getenv("TSLIB_TSDEVICE")) != NULL)
     {
@@ -37,7 +49,7 @@ static int TouchScreenDevInit(void)
         return -1;
     }
 
-    if (GetDispResolution(&giXres, &giYres))
+    if (GetDispResolution(&giXres, &giYres, &iBpp))
     {
         return -1;
     }
@@ -45,79 +57,47 @@ static int TouchScreenDevInit(void)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： StdinDevExit
+ * 功能描述： 触摸屏输入模块的设备退出函数
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int TouchScreenDevExit(void)
 {
     return 0;
 }
 
-// static int isOutOf500ms(struct timeval * ptPreTime, struct timeval * ptNowTime)
-// {
-//     int iPreMs;
-//     int iNowMs;
-
-//     iPreMs = ptPreTime->tv_sec * 1000 + ptPreTime->tv_usec / 1000;
-//     iNowMs = ptNowTime->tv_sec * 1000 + ptNowTime->tv_usec / 1000;
-
-//     return (iNowMs > iPreMs + 500);
-// }
-
+/**********************************************************************
+ * 函数名称： TouchScreenGetInputEvent
+ * 功能描述： 触摸屏输入模块的读取数据函数,它在触摸屏输入模块的子线程中被调用
+ * 输入参数： 无
+ * 输出参数： ptInputEvent - 内含得到的输入数据
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int TouchScreenGetInputEvent(PT_InputEvent ptInputEvent)
 {
     struct ts_sample tSamp;
-    struct ts_sample tSampPressed;
-    struct ts_sample tSampReleased;
     int iRet;
-    int bStart = 0;
-    int iDelta;
-
-    // static struct timeval tPreTime;
 
     while (1)
     {
         iRet = ts_read(g_tTSDev, &tSamp, 1); /* 如果无数据则休眠 */
         if (iRet == 1)
         {
-            if ((tSamp.pressure > 0) && (bStart == 0))
-            {
-                /* 刚按下 */
-                /* 记录刚开始压下的点 */
-                tSampPressed = tSamp;
-                bStart       = 1;
-            }
-
-            if (tSamp.pressure <= 0)
-            {
-                /* 松开 */
-                tSampReleased = tSamp;
-
-                /* 处理数据 */
-                if (!bStart)
-                {
-                    return -1;
-                }
-                else
-                {
-                    iDelta              = tSampReleased.x - tSampPressed.x;
-                    ptInputEvent->tTime = tSampReleased.tv;
-                    ptInputEvent->iType = INPUT_TYPE_TOUCHSCREEN;
-
-                    if (iDelta > giXres / 5)
-                    {
-                        /* 翻到上一页 */
-                        ptInputEvent->iVal = INPUT_VALUE_UP;
-                    }
-                    else if (iDelta < 0 - giXres / 5)
-                    {
-                        /* 翻到下一页 */
-                        ptInputEvent->iVal = INPUT_VALUE_DOWN;
-                    }
-                    else
-                    {
-                        ptInputEvent->iVal = INPUT_VALUE_UNKNOWN;
-                    }
-                    return 0;
-                }
-            }
+            ptInputEvent->tTime     = tSamp.tv;
+            ptInputEvent->iType     = INPUT_TYPE_TOUCHSCREEN;
+            ptInputEvent->iX        = tSamp.x;
+            ptInputEvent->iY        = tSamp.y;
+            ptInputEvent->iPressure = tSamp.pressure;
+            return 0;
         }
         else
         {
@@ -135,6 +115,16 @@ static T_InputOpr g_tTouchScreenOpr = {
     .GetInputEvent = TouchScreenGetInputEvent,
 };
 
+/**********************************************************************
+ * 函数名称： TouchScreenInit
+ * 功能描述： 注册"触摸屏输入模块"
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int TouchScreenInit(void)
 {
     return RegisterInputOpr(&g_tTouchScreenOpr);

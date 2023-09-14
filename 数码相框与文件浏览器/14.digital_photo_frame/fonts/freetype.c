@@ -7,17 +7,30 @@
 
 static int FreeTypeFontInit(char * pcFontFile, unsigned int dwFontSize);
 static int FreeTypeGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap);
+static void FreeTypeSetFontSize(unsigned int dwFontSize);
 
 static T_FontOpr g_tFreeTypeFontOpr = {
     .name          = "freetype",
     .FontInit      = FreeTypeFontInit,
     .GetFontBitmap = FreeTypeGetFontBitmap,
+    .SetFontSize   = FreeTypeSetFontSize,
 };
 
 static FT_Library g_tLibrary;
 static FT_Face g_tFace;
 static FT_GlyphSlot g_tSlot;
 
+/**********************************************************************
+ * 函数名称： FreeTypeFontInit
+ * 功能描述： FreeType字体模块的初始化函数
+ * 输入参数： pcFontFile - FreeType字库文件
+ *            dwFontSize - 字符尺寸(单位:象素)
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int FreeTypeFontInit(char * pcFontFile, unsigned int dwFontSize)
 {
     int iError;
@@ -51,6 +64,17 @@ static int FreeTypeFontInit(char * pcFontFile, unsigned int dwFontSize)
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： ASCIIGetFontBitmap
+ * 功能描述： 获得UNICODE字符的FreeType位图
+ * 输入参数： dwCode       - 字符的UNICODE编码值
+ * 输出参数： ptFontBitMap - 内含位图信息
+ * 返 回 值： 0  - 成功
+ *            -1 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 static int FreeTypeGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap)
 {
     int iError;
@@ -92,6 +116,31 @@ static int FreeTypeGetFontBitmap(unsigned int dwCode, PT_FontBitMap ptFontBitMap
     return 0;
 }
 
+/**********************************************************************
+ * 函数名称： FreeTypeSetFontSize
+ * 功能描述： 设置字符的尺寸(单位:色素)
+ * 输入参数： dwFontSize - 字符的尺寸(单位:色素)
+ * 输出参数： 无
+ * 返 回 值： 无
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
+static void FreeTypeSetFontSize(unsigned int dwFontSize)
+{
+    FT_Set_Pixel_Sizes(g_tFace, dwFontSize, 0);
+}
+
+/**********************************************************************
+ * 函数名称： FreeTypeInit
+ * 功能描述： 注册"FreeType字体模块"
+ * 输入参数： 无
+ * 输出参数： 无
+ * 返 回 值： 0 - 成功, 其他值 - 失败
+ * 修改日期        版本号     修改人	      修改内容
+ * -----------------------------------------------
+ * 2013/02/08	     V1.0	  韦东山	      创建
+ ***********************************************************************/
 int FreeTypeInit(void)
 {
     return RegisterFontOpr(&g_tFreeTypeFontOpr);
