@@ -2,9 +2,7 @@
 #ifndef _PIC_MANAGER_H
 #define _PIC_MANAGER_H
 
-#include "../include/config.h"
-#include "../include/file.h"
-#include "page_manager.h"
+#include "config.h"
 #include "pic_operation.h"
 
 /**********************************************************************

@@ -1,0 +1,4 @@
+#ifndef _CONVERT_MANAGER_H_
+#define _CONVERT_MANAGER_H_
+
+#endif   // _CONVERT_MANAGER_H_
