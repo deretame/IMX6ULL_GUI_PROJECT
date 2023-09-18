@@ -1,6 +1,6 @@
 
 #include "../include/config.h"
-#include <render.h>
+#include "../include/render.h"
 #include <stdlib.h>
 
 static T_Layout g_atMainPageIconsLayout[] = {
@@ -16,14 +16,14 @@ static T_PageLayout g_tMainPageLayout = {
 };
 
 /**********************************************************************
- * º¯ÊıÃû³Æ£º CalcMainPageLayout
- * ¹¦ÄÜÃèÊö£º ¼ÆËãÒ³ÃæÖĞ¸÷Í¼±ê×ù±êÖµ
- * ÊäÈë²ÎÊı£º ÎŞ
- * Êä³ö²ÎÊı£º ptPageLayout - ÄÚº¬¸÷Í¼±êµÄ×óÉÏ½Ç/ÓÒÏÂ½Ç×ù±êÖµ
- * ·µ »Ø Öµ£º ÎŞ
- * ĞŞ¸ÄÈÕÆÚ        °æ±¾ºÅ     ĞŞ¸ÄÈË	      ĞŞ¸ÄÄÚÈİ
+ * å‡½æ•°åç§°ï¼š CalcMainPageLayout
+ * åŠŸèƒ½æè¿°ï¼š è®¡ç®—é¡µé¢ä¸­å„å›¾æ ‡åº§æ ‡å€¼
+ * è¾“å…¥å‚æ•°ï¼š æ— 
+ * è¾“å‡ºå‚æ•°ï¼š ptPageLayout - å†…å«å„å›¾æ ‡çš„å·¦ä¸Šè§’/å³ä¸‹è§’åº§æ ‡å€¼
+ * è¿” å› å€¼ï¼š æ— 
+ * ä¿®æ”¹æ—¥æœŸ        ç‰ˆæœ¬å·     ä¿®æ”¹äºº	      ä¿®æ”¹å†…å®¹
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  Î¤¶«É½	      ´´½¨
+ * 2013/02/08	     V1.0	  éŸ¦ä¸œå±±	      åˆ›å»º
  ***********************************************************************/
 static void CalcMainPageLayout(PT_PageLayout ptPageLayout)
 {
@@ -54,7 +54,7 @@ static void CalcMainPageLayout(PT_PageLayout ptPageLayout)
     iWidth  = iHeight;
     iStartY = iHeight / 2;
 
-    /* select_foldÍ¼±ê */
+    /* select_foldå›¾æ ‡ */
     atLayout[0].iTopLeftY  = iStartY;
     atLayout[0].iBotRightY = atLayout[0].iTopLeftY + iHeight - 1;
     atLayout[0].iTopLeftX  = (iXres - iWidth * 2) / 2;
@@ -66,7 +66,7 @@ static void CalcMainPageLayout(PT_PageLayout ptPageLayout)
         ptPageLayout->iMaxTotalBytes = iTmpTotalBytes;
     }
 
-    /* intervalÍ¼±ê */
+    /* intervalå›¾æ ‡ */
     atLayout[1].iTopLeftY  = atLayout[0].iBotRightY + iHeight / 2 + 1;
     atLayout[1].iBotRightY = atLayout[1].iTopLeftY + iHeight - 1;
     atLayout[1].iTopLeftX  = (iXres - iWidth * 2) / 2;
@@ -78,7 +78,7 @@ static void CalcMainPageLayout(PT_PageLayout ptPageLayout)
         ptPageLayout->iMaxTotalBytes = iTmpTotalBytes;
     }
 
-    /* returnÍ¼±ê */
+    /* returnå›¾æ ‡ */
     atLayout[2].iTopLeftY  = atLayout[1].iBotRightY + iHeight / 2 + 1;
     atLayout[2].iBotRightY = atLayout[2].iTopLeftY + iHeight - 1;
     atLayout[2].iTopLeftX  = (iXres - iWidth * 2) / 2;
@@ -92,15 +92,15 @@ static void CalcMainPageLayout(PT_PageLayout ptPageLayout)
 }
 
 /**********************************************************************
- * º¯ÊıÃû³Æ£º MainPageGetInputEvent
- * ¹¦ÄÜÃèÊö£º Îª"Ö÷Ò³Ãæ"»ñµÃÊäÈëÊı¾İ,ÅĞ¶ÏÊäÈëÊÂ¼şÎ»ÓÚÄÄÒ»¸öÍ¼±êÉÏ
- * ÊäÈë²ÎÊı£º ptPageLayout - ÄÚº¬¶à¸öÍ¼±êµÄÏÔÊ¾ÇøÓò
- * Êä³ö²ÎÊı£º ptInputEvent - ÄÚº¬µÃµ½µÄÊäÈëÊı¾İ
- * ·µ »Ø Öµ£º -1     - ÊäÈëÊı¾İ²»Î»ÓÚÈÎºÎÒ»¸öÍ¼±êÖ®ÉÏ
- *            ÆäËûÖµ - ÊäÈëÊı¾İËùÂäÔÚµÄÍ¼±ê(PageLayout->atLayoutÊı×éµÄÄÄÒ»Ïî)
- * ĞŞ¸ÄÈÕÆÚ        °æ±¾ºÅ     ĞŞ¸ÄÈË	      ĞŞ¸ÄÄÚÈİ
+ * å‡½æ•°åç§°ï¼š MainPageGetInputEvent
+ * åŠŸèƒ½æè¿°ï¼š ä¸º"ä¸»é¡µé¢"è·å¾—è¾“å…¥æ•°æ®,åˆ¤æ–­è¾“å…¥äº‹ä»¶ä½äºå“ªä¸€ä¸ªå›¾æ ‡ä¸Š
+ * è¾“å…¥å‚æ•°ï¼š ptPageLayout - å†…å«å¤šä¸ªå›¾æ ‡çš„æ˜¾ç¤ºåŒºåŸŸ
+ * è¾“å‡ºå‚æ•°ï¼š ptInputEvent - å†…å«å¾—åˆ°çš„è¾“å…¥æ•°æ®
+ * è¿” å› å€¼ï¼š -1     - è¾“å…¥æ•°æ®ä¸ä½äºä»»ä½•ä¸€ä¸ªå›¾æ ‡ä¹‹ä¸Š
+ *            å…¶ä»–å€¼ - è¾“å…¥æ•°æ®æ‰€è½åœ¨çš„å›¾æ ‡(PageLayout->atLayoutæ•°ç»„çš„å“ªä¸€é¡¹)
+ * ä¿®æ”¹æ—¥æœŸ        ç‰ˆæœ¬å·     ä¿®æ”¹äºº	      ä¿®æ”¹å†…å®¹
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  Î¤¶«É½	      ´´½¨
+ * 2013/02/08	     V1.0	  éŸ¦ä¸œå±±	      åˆ›å»º
  ***********************************************************************/
 static int MainPageGetInputEvent(PT_PageLayout ptPageLayout, PT_InputEvent ptInputEvent)
 {
@@ -108,14 +108,14 @@ static int MainPageGetInputEvent(PT_PageLayout ptPageLayout, PT_InputEvent ptInp
 }
 
 /**********************************************************************
- * º¯ÊıÃû³Æ£º ShowMainPage
- * ¹¦ÄÜÃèÊö£º ÏÔÊ¾"Ö÷Ò³Ãæ"
- * ÊäÈë²ÎÊı£º ptPageLayout - ÄÚº¬¶à¸öÍ¼±êµÄÎÄ¼şÃûºÍÏÔÊ¾ÇøÓò
- * Êä³ö²ÎÊı£º ÎŞ
- * ·µ »Ø Öµ£º ÎŞ
- * ĞŞ¸ÄÈÕÆÚ        °æ±¾ºÅ     ĞŞ¸ÄÈË	      ĞŞ¸ÄÄÚÈİ
+ * å‡½æ•°åç§°ï¼š ShowMainPage
+ * åŠŸèƒ½æè¿°ï¼š æ˜¾ç¤º"ä¸»é¡µé¢"
+ * è¾“å…¥å‚æ•°ï¼š ptPageLayout - å†…å«å¤šä¸ªå›¾æ ‡çš„æ–‡ä»¶åå’Œæ˜¾ç¤ºåŒºåŸŸ
+ * è¾“å‡ºå‚æ•°ï¼š æ— 
+ * è¿” å› å€¼ï¼š æ— 
+ * ä¿®æ”¹æ—¥æœŸ        ç‰ˆæœ¬å·     ä¿®æ”¹äºº	      ä¿®æ”¹å†…å®¹
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  Î¤¶«É½	      ´´½¨
+ * 2013/02/08	     V1.0	  éŸ¦ä¸œå±±	      åˆ›å»º
  ***********************************************************************/
 static void ShowMainPage(PT_PageLayout ptPageLayout)
 {
@@ -124,7 +124,7 @@ static void ShowMainPage(PT_PageLayout ptPageLayout)
 
     PT_Layout atLayout = ptPageLayout->atLayout;
 
-    /* 1. »ñµÃÏÔ´æ */
+    /* 1. è·å¾—æ˜¾å­˜ */
     ptVideoMem = GetVideoMem(ID("main"), 1);
     if (ptVideoMem == NULL)
     {
@@ -132,9 +132,9 @@ static void ShowMainPage(PT_PageLayout ptPageLayout)
         return;
     }
 
-    /* 2. Ãè»­Êı¾İ */
+    /* 2. æç”»æ•°æ® */
 
-    /* Èç¹û»¹Ã»ÓĞ¼ÆËã¹ı¸÷Í¼±êµÄ×ø±ê */
+    /* å¦‚æœè¿˜æ²¡æœ‰è®¡ç®—è¿‡å„å›¾æ ‡çš„åæ ‡ */
     if (atLayout[0].iTopLeftX == 0)
     {
         CalcMainPageLayout(ptPageLayout);
@@ -143,22 +143,22 @@ static void ShowMainPage(PT_PageLayout ptPageLayout)
     iError = GeneratePage(ptPageLayout, ptVideoMem);
     (void)iError;
 
-    /* 3. Ë¢µ½Éè±¸ÉÏÈ¥ */
+    /* 3. åˆ·åˆ°è®¾å¤‡ä¸Šå» */
     FlushVideoMemToDev(ptVideoMem);
 
-    /* 4. ½â·ÅÏÔ´æ */
+    /* 4. è§£æ”¾æ˜¾å­˜ */
     PutVideoMem(ptVideoMem);
 }
 
 /**********************************************************************
- * º¯ÊıÃû³Æ£º MainPageRun
- * ¹¦ÄÜÃèÊö£º "Ö÷Ò³Ãæ"µÄÔËĞĞº¯Êı: ÏÔÊ¾²Ëµ¥Í¼±ê,¸ù¾İÓÃ»§ÊäÈë×÷³ö·´Ó¦
- * ÊäÈë²ÎÊı£º ptParentPageParams - Î´ÓÃ
- * Êä³ö²ÎÊı£º ÎŞ
- * ·µ »Ø Öµ£º ÎŞ
- * ĞŞ¸ÄÈÕÆÚ        °æ±¾ºÅ     ĞŞ¸ÄÈË	      ĞŞ¸ÄÄÚÈİ
+ * å‡½æ•°åç§°ï¼š MainPageRun
+ * åŠŸèƒ½æè¿°ï¼š "ä¸»é¡µé¢"çš„è¿è¡Œå‡½æ•°: æ˜¾ç¤ºèœå•å›¾æ ‡,æ ¹æ®ç”¨æˆ·è¾“å…¥ä½œå‡ºååº”
+ * è¾“å…¥å‚æ•°ï¼š ptParentPageParams - æœªç”¨
+ * è¾“å‡ºå‚æ•°ï¼š æ— 
+ * è¿” å› å€¼ï¼š æ— 
+ * ä¿®æ”¹æ—¥æœŸ        ç‰ˆæœ¬å·     ä¿®æ”¹äºº	      ä¿®æ”¹å†…å®¹
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  Î¤¶«É½	      ´´½¨
+ * 2013/02/08	     V1.0	  éŸ¦ä¸œå±±	      åˆ›å»º
  ***********************************************************************/
 static void MainPageRun(PT_PageParams ptParentPageParams)
 {
@@ -170,55 +170,55 @@ static void MainPageRun(PT_PageParams ptParentPageParams)
 
     tPageParams.iPageID = ID("main");
 
-    /* 1. ÏÔÊ¾Ò³Ãæ */
+    /* 1. æ˜¾ç¤ºé¡µé¢ */
     ShowMainPage(&g_tMainPageLayout);
 
-    /* 2. ´´½¨PrepareÏß³Ì */
+    /* 2. åˆ›å»ºPrepareçº¿ç¨‹ */
 
-    /* 3. µ÷ÓÃGetInputEvent»ñµÃÊäÈëÊÂ¼ş£¬½ø¶ø´¦Àí */
+    /* 3. è°ƒç”¨GetInputEventè·å¾—è¾“å…¥äº‹ä»¶ï¼Œè¿›è€Œå¤„ç† */
     while (1)
     {
         iIndex = MainPageGetInputEvent(&g_tMainPageLayout, &tInputEvent);
         if (tInputEvent.iPressure == 0)
         {
-            /* Èç¹ûÊÇËÉ¿ª */
+            /* å¦‚æœæ˜¯æ¾å¼€ */
             if (bPressed)
             {
-                /* Ôø¾­ÓĞ°´Å¥±»°´ÏÂ */
+                /* æ›¾ç»æœ‰æŒ‰é’®è¢«æŒ‰ä¸‹ */
                 ReleaseButton(&g_atMainPageIconsLayout[iIndexPressed]);
                 bPressed = 0;
 
-                if (iIndexPressed == iIndex) /* °´ÏÂºÍËÉ¿ª¶¼ÊÇÍ¬Ò»¸ö°´Å¥ */
+                if (iIndexPressed == iIndex) /* æŒ‰ä¸‹å’Œæ¾å¼€éƒ½æ˜¯åŒä¸€ä¸ªæŒ‰é’® */
                 {
                     switch (iIndexPressed)
                     {
-                    case 0: /* ä¯ÀÀ°´Å¥ */
+                    case 0: /* æµè§ˆæŒ‰é’® */
                     {
                         Page("browse")->Run(&tPageParams);
 
-                        /* ´ÓÉèÖÃÒ³Ãæ·µ»ØºóÏÔÊ¾µ±Ê×µÄÖ÷Ò³Ãæ */
+                        /* ä»è®¾ç½®é¡µé¢è¿”å›åæ˜¾ç¤ºå½“é¦–çš„ä¸»é¡µé¢ */
                         ShowMainPage(&g_tMainPageLayout);
 
                         break;
                     }
-                    case 1: /* Á¬²¥°´Å¥ */
+                    case 1: /* è¿æ’­æŒ‰é’® */
                     {
-                        /* ÉèÖÃtPageParams.strCurPictureFile[0] = '\0'
-                         * ÕâÑù¾Í»áÊ¹ÓÃÄ¬ÈÏµÄ²¥·ÅÄ¿Â¼
+                        /* è®¾ç½®tPageParams.strCurPictureFile[0] = '\0'
+                         * è¿™æ ·å°±ä¼šä½¿ç”¨é»˜è®¤çš„æ’­æ”¾ç›®å½•
                          */
                         tPageParams.strCurPictureFile[0] = '\0';
                         Page("auto")->Run(&tPageParams);
 
-                        /* ´ÓÉèÖÃÒ³Ãæ·µ»ØºóÏÔÊ¾µ±Ê×µÄÖ÷Ò³Ãæ */
+                        /* ä»è®¾ç½®é¡µé¢è¿”å›åæ˜¾ç¤ºå½“é¦–çš„ä¸»é¡µé¢ */
                         ShowMainPage(&g_tMainPageLayout);
 
                         break;
                     }
-                    case 2: /* ÉèÖÃ°´Å¥ */
+                    case 2: /* è®¾ç½®æŒ‰é’® */
                     {
                         Page("setting")->Run(&tPageParams);
 
-                        /* ´ÓÉèÖÃÒ³Ãæ·µ»ØºóÏÔÊ¾µ±Ê×µÄÖ÷Ò³Ãæ */
+                        /* ä»è®¾ç½®é¡µé¢è¿”å›åæ˜¾ç¤ºå½“é¦–çš„ä¸»é¡µé¢ */
                         ShowMainPage(&g_tMainPageLayout);
 
                         break;
@@ -235,12 +235,12 @@ static void MainPageRun(PT_PageParams ptParentPageParams)
         }
         else
         {
-            /* °´ÏÂ×´Ì¬ */
+            /* æŒ‰ä¸‹çŠ¶æ€ */
             if (iIndex != -1)
             {
                 if (!bPressed)
                 {
-                    /* Î´Ôø°´ÏÂ°´Å¥ */
+                    /* æœªæ›¾æŒ‰ä¸‹æŒ‰é’® */
                     bPressed      = 1;
                     iIndexPressed = iIndex;
                     PressButton(&g_atMainPageIconsLayout[iIndexPressed]);
@@ -258,14 +258,14 @@ static T_PageAction g_tMainPageAction = {
 };
 
 /**********************************************************************
- * º¯ÊıÃû³Æ£º MainPageInit
- * ¹¦ÄÜÃèÊö£º ×¢²á"Ö÷Ò³Ãæ"
- * ÊäÈë²ÎÊı£º ÎŞ
- * Êä³ö²ÎÊı£º ÎŞ
- * ·µ »Ø Öµ£º 0 - ³É¹¦, ÆäËûÖµ - Ê§°Ü
- * ĞŞ¸ÄÈÕÆÚ        °æ±¾ºÅ     ĞŞ¸ÄÈË	      ĞŞ¸ÄÄÚÈİ
+ * å‡½æ•°åç§°ï¼š MainPageInit
+ * åŠŸèƒ½æè¿°ï¼š æ³¨å†Œ"ä¸»é¡µé¢"
+ * è¾“å…¥å‚æ•°ï¼š æ— 
+ * è¾“å‡ºå‚æ•°ï¼š æ— 
+ * è¿” å› å€¼ï¼š 0 - æˆåŠŸ, å…¶ä»–å€¼ - å¤±è´¥
+ * ä¿®æ”¹æ—¥æœŸ        ç‰ˆæœ¬å·     ä¿®æ”¹äºº	      ä¿®æ”¹å†…å®¹
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  Î¤¶«É½	      ´´½¨
+ * 2013/02/08	     V1.0	  éŸ¦ä¸œå±±	      åˆ›å»º
  ***********************************************************************/
 int MainPageInit(void)
 {

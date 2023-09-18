@@ -1,6 +1,6 @@
+#include "../include/page_manager.h"
 #include "../include/config.h"
-#include <page_manager.h>
-#include <render.h>
+#include "../include/render.h"
 #include <stdlib.h>
 #include <string.h>
 

@@ -1,6 +1,6 @@
 #include "../include/config.h"
 #include "../include/fonts_manager.h"
-#include <render.h>
+#include "../include/render.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

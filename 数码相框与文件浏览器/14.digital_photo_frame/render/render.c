@@ -1,12 +1,13 @@
+#include "../include/render.h"
 #include "../include/config.h"
 #include "../include/encoding_manager.h"
 #include "../include/file.h"
 #include "../include/fonts_manager.h"
 #include <picfmt_manager.h>
-#include <render.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 /**********************************************************************
  * º¯ÊýÃû³Æ£º FlushVideoMemToDev

@@ -1,6 +1,6 @@
 #include "../include/config.h"
 #include "../include/file.h"
-#include <render.h>
+#include "../include/render.h"
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>

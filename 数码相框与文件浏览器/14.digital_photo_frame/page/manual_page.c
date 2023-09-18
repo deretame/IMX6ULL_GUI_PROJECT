@@ -1,7 +1,7 @@
 #include "../include/config.h"
 #include "../include/file.h"
 #include "../include/fonts_manager.h"
-#include <render.h>
+#include "../include/render.h"
 #include <stdlib.h>
 #include <string.h>
 
