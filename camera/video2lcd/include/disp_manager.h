@@ -1,7 +1,7 @@
 #ifndef _DISP_MANAGER_H
 #define _DISP_MANAGER_H
 
-#include "../include/pic_operation.h"
+#include "pic_operation.h"
 
 /* 显示区域,含该区域的左上角/右下角座标
  * 如果是图标,还含有图标的文件名

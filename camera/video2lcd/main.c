@@ -11,11 +11,9 @@
 #include <string.h>
 #include <unistd.h>
 
-
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-
 
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -39,8 +37,8 @@ int main(int argc, char ** argv)
 
     if (argc != 2)
     {
-        DBG_PRINTF("Usage:\n");
-        DBG_PRINTF("%s <freetype_file>\n", argv[0]);
+        DebugPrint("Usage:\n");
+        DebugPrint("%s <freetype_file>\n", argv[0]);
         return 0;
     }
 
@@ -70,14 +68,14 @@ int main(int argc, char ** argv)
     iError = FontsInit();
     if (iError)
     {
-        DBG_PRINTF("FontsInit error!\n");
+        DebugPrint("FontsInit error!\n");
     }
 
     /* 设置freetype字库所用的文件和字体尺寸 */
     iError = SetFontsDetail("freetype", argv[1], 24);
     if (iError)
     {
-        DBG_PRINTF("SetFontsDetail error!\n");
+        DebugPrint("SetFontsDetail error!\n");
     }
 
     /* 注册图片文件解析模块 */

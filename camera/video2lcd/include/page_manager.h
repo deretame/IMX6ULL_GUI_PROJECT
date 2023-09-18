@@ -3,9 +3,8 @@
 #ifndef _PAGE_MANAGER_H
 #define _PAGE_MANAGER_H
 
-#include "../include/disp_manager.h"
-#include "../include/input_manager.h"
-
+#include "disp_manager.h"
+#include "input_manager.h"
 
 typedef struct PageParams
 {

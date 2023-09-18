@@ -1,5 +1,5 @@
-#include "../../include/config.h"
-#include "../../include/pic_operation.h"
+#include "../include/config.h"
+#include <pic_operation.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -35,7 +35,7 @@ int PicZoom(PT_PixelDatas ptOriginPic, PT_PixelDatas ptZoomPic)
     pdwSrcXTable = malloc(sizeof(unsigned long) * dwDstWidth);
     if (NULL == pdwSrcXTable)
     {
-        DBG_PRINTF("malloc error!\n");
+        DebugPrint("malloc error!\n");
         return -1;
     }
 

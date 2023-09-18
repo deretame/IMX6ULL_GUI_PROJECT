@@ -426,7 +426,7 @@ void ClearVideoMem(PT_VideoMem ptVideoMem, unsigned int dwColor)
     }
     default:
     {
-        DBG_PRINTF("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
+        DebugPrint("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
         return;
     }
     }
@@ -508,7 +508,7 @@ void ClearVideoMemRegion(PT_VideoMem ptVideoMem, PT_Layout ptLayout, unsigned in
     }
     default:
     {
-        DBG_PRINTF("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
+        DebugPrint("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
         return;
     }
     }

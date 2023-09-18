@@ -1,12 +1,11 @@
-#include "../../include/config.h"
-#include "../../include/file.h"
-#include "../../include/pic_operation.h"
-#include "../../include/picfmt_manager.h"
+#include "../include/config.h"
+#include "../include/file.h"
 #include <jpeglib.h>
+#include <pic_operation.h>
+#include <picfmt_manager.h>
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 typedef struct MyErrorMgr
 {
@@ -45,7 +44,7 @@ static void MyErrorExit(j_common_ptr ptCInfo)
 
     /* Create the message */
     (*ptCInfo->err->format_message)(ptCInfo, errStr);
-    DBG_PRINTF("%s\n", errStr);
+    DebugPrint("%s\n", errStr);
 
     longjmp(ptMyErr->setjmp_buffer, 1);
 }

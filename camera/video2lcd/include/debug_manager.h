@@ -1,28 +1,28 @@
-
 #ifndef _DEBUG_MANAGER_H
 #define _DEBUG_MANAGER_H
 
 /* 信息的调试级别,数值起小级别越高 */
-#define	APP_EMERG	"<0>"	/* system is unusable			*/
-#define	APP_ALERT	"<1>"	/* action must be taken immediately	*/
-#define	APP_CRIT	"<2>"	/* critical conditions			*/
-#define	APP_ERR	    "<3>"	/* error conditions			*/
-#define	APP_WARNING	"<4>"	/* warning conditions			*/
-#define	APP_NOTICE	"<5>"	/* normal but significant condition	*/
-#define	APP_INFO	"<6>"	/* informational			*/
-#define	APP_DEBUG	"<7>"	/* debug-level messages			*/
+#define APP_EMERG        "<0>" /* system is unusable			*/
+#define APP_ALERT        "<1>" /* action must be taken immediately	*/
+#define APP_CRIT         "<2>" /* critical conditions			*/
+#define APP_ERR          "<3>" /* error conditions			*/
+#define APP_WARNING      "<4>" /* warning conditions			*/
+#define APP_NOTICE       "<5>" /* normal but significant condition	*/
+#define APP_INFO         "<6>" /* informational			*/
+#define APP_DEBUG        "<7>" /* debug-level messages			*/
 
 /* 信息的默认调试级别 */
-#define DEFAULT_DBGLEVEL  4
+#define DEFAULT_DBGLEVEL 4
 
-typedef struct DebugOpr {
-	char *name;
-	int isCanUse;
-	int (*DebugInit)(void);   /* 调试模块的初始化函数 */
-	int (*DebugExit)(void);   /* 退出函数 */
-	int (*DebugPrint)(char *strData);  /* 输出函数 */
-	struct DebugOpr *ptNext;
-}T_DebugOpr, *PT_DebugOpr;
+typedef struct DebugOpr
+{
+    char * name;
+    int isCanUse;
+    int (*DebugInit)(void);            /* 调试模块的初始化函数 */
+    int (*DebugExit)(void);            /* 退出函数 */
+    int (*DebugPrint)(char * strData); /* 输出函数 */
+    struct DebugOpr * ptNext;
+} T_DebugOpr, *PT_DebugOpr;
 
 /**********************************************************************
  * 函数名称： RegisterDispOpr
@@ -53,13 +53,13 @@ void ShowDebugOpr(void);
  * 功能描述： 根据名字取出指定的"调试模块"
  * 输入参数： pcName - 名字
  * 输出参数： 无
- * 返 回 值： NULL   - 失败,没有指定的模块, 
+ * 返 回 值： NULL   - 失败,没有指定的模块,
  *            非NULL - 显示模块的PT_DebugOpr结构体指针
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-PT_DebugOpr GetDebugOpr(char *pcName);
+PT_DebugOpr GetDebugOpr(char * pcName);
 
 /**********************************************************************
  * 函数名称： SetDbgLevel
@@ -72,7 +72,7 @@ PT_DebugOpr GetDebugOpr(char *pcName);
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-int SetDbgLevel(char *strBuf);
+int SetDbgLevel(char * strBuf);
 
 /**********************************************************************
  * 函数名称： SetDbgChanel
@@ -89,7 +89,7 @@ int SetDbgLevel(char *strBuf);
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-int SetDbgChanel(char *strBuf);
+int SetDbgChanel(char * strBuf);
 
 /**********************************************************************
  * 函数名称： DebugInit
@@ -107,7 +107,7 @@ int DebugInit(void);
  * 函数名称： DebugPrint
  * 功能描述： 打印信息的总入口函数
  *            程序里用DBG_PRINTF来打印, 它就是DebugPrint
- *            在config.h里有这样的宏定义: #define DBG_PRINTF DebugPrint
+ *            在config.h里有这样的宏定义: #define DebugPrint DebugPrint
  * 输入参数： 可变参数,用法和printf完全一样
  * 输出参数： 无
  * 返 回 值： 0   - 成功
@@ -116,7 +116,7 @@ int DebugInit(void);
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-int DebugPrint(const char *pcFormat, ...);
+int DebugPrint(const char * pcFormat, ...);
 
 /**********************************************************************
  * 函数名称： InitDebugChanel
@@ -156,4 +156,3 @@ int StdoutInit(void);
 int NetPrintInit(void);
 
 #endif /* _DEBUG_MANAGER_H */
-  

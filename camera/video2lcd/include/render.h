@@ -2,7 +2,7 @@
 #ifndef _RENDER_H
 #define _RENDER_H
 
-#include "disp_manager.h"
+#include "../include/disp_manager.h"
 #include "page_manager.h"
 #include "pic_operation.h"
 

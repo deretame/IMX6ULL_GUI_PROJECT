@@ -3,10 +3,11 @@
 #include "../include/encoding_manager.h"
 #include "../include/file.h"
 #include "../include/fonts_manager.h"
-#include "../include/picfmt_manager.h"
+#include <picfmt_manager.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 /**********************************************************************
  * 函数名称： FlushVideoMemToDev
@@ -51,14 +52,14 @@ int GetPixelDatasForIcon(char * strFileName, PT_PixelDatas ptPixelDatas)
     iError = MapFile(&tFileMap);
     if (iError)
     {
-        DBG_PRINTF("MapFile %s error!\n", strFileName);
+        DebugPrint("MapFile %s error!\n", strFileName);
         return -1;
     }
 
     iError = Parser("bmp")->isSupport(&tFileMap);
     if (iError == 0)
     {
-        DBG_PRINTF("can't support this file: %s\n", strFileName);
+        DebugPrint("can't support this file: %s\n", strFileName);
         UnMapFile(&tFileMap);
         return -1;
     }
@@ -68,7 +69,7 @@ int GetPixelDatasForIcon(char * strFileName, PT_PixelDatas ptPixelDatas)
     iError             = Parser("bmp")->GetPixelDatas(&tFileMap, ptPixelDatas);
     if (iError)
     {
-        DBG_PRINTF("GetPixelDatas for %s error!\n", strFileName);
+        DebugPrint("GetPixelDatas for %s error!\n", strFileName);
         UnMapFile(&tFileMap);
         return -1;
     }
@@ -112,7 +113,7 @@ int isPictureFileSupported(char * strFileName)
     iError                    = MapFile(&tFileMap);
     if (iError)
     {
-        DBG_PRINTF("MapFile %s error!\n", strFileName);
+        DebugPrint("MapFile %s error!\n", strFileName);
         return 0;
     }
 
@@ -149,7 +150,7 @@ int GetPixelDatasFrmFile(char * strFileName, PT_PixelDatas ptPixelDatas)
     iError = MapFile(&tFileMap);
     if (iError)
     {
-        DBG_PRINTF("MapFile %s error!\n", strFileName);
+        DebugPrint("MapFile %s error!\n", strFileName);
         return -1;
     }
 
@@ -165,7 +166,7 @@ int GetPixelDatasFrmFile(char * strFileName, PT_PixelDatas ptPixelDatas)
     iError             = ptParser->GetPixelDatas(&tFileMap, ptPixelDatas);
     if (iError)
     {
-        DBG_PRINTF("GetPixelDatas for %s error!\n", strFileName);
+        DebugPrint("GetPixelDatas for %s error!\n", strFileName);
         UnMapFile(&tFileMap);
         return -1;
     }
@@ -218,8 +219,8 @@ static int SetColorForPixelInVideoMem(int iX, int iY, PT_VideoMem ptVideoMem, un
     pwVideoMem16bpp  = (unsigned short *)pucVideoMem;
     pdwVideoMem32bpp = (unsigned int *)pucVideoMem;
 
-    // DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
-    // DBG_PRINTF("x = %d, y = %d\n", iX, iY);
+    // DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    // DebugPrint("x = %d, y = %d\n", iX, iY);
 
     switch (ptVideoMem->tPixelDatas.iBpp)
     {
@@ -372,7 +373,7 @@ static int MergeOneFontToVideoMem(PT_FontBitMap ptFontBitMap, PT_VideoMem ptVide
     }
     else
     {
-        DBG_PRINTF("ShowOneFont error, can't support %d bpp\n", ptFontBitMap->iBpp);
+        DebugPrint("ShowOneFont error, can't support %d bpp\n", ptFontBitMap->iBpp);
         return -1;
     }
     return 0;
@@ -428,7 +429,7 @@ int MergerStringToCenterOfRectangleInVideoMem(int iTopLeftX, int iTopLeftY, int 
             /* 字符串结束 */
             if (!bHasGetCode)
             {
-                // DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+                // DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
                 return -1;
             }
             else
@@ -467,7 +468,7 @@ int MergerStringToCenterOfRectangleInVideoMem(int iTopLeftX, int iTopLeftY, int 
         }
         else
         {
-            DBG_PRINTF("GetFontBitmap for calc width/height error!\n");
+            DebugPrint("GetFontBitmap for calc width/height error!\n");
         }
     }
 
@@ -483,18 +484,18 @@ int MergerStringToCenterOfRectangleInVideoMem(int iTopLeftX, int iTopLeftY, int 
     /* 如果字符串过高 */
     if (iHeight > iBotRightY - iTopLeftY)
     {
-        DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
-        // DBG_PRINTF("iHeight = %d, iBotRightY - iTopLeftX = %d - %d = %d\n", iHeight, iBotRightY, iTopLeftY, iBotRightY - iTopLeftY);
+        DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+        // DebugPrint("iHeight = %d, iBotRightY - iTopLeftX = %d - %d = %d\n", iHeight, iBotRightY, iTopLeftY, iBotRightY - iTopLeftY);
         return -1;
     }
-    // DBG_PRINTF("iWidth = %d, iHeight = %d\n", iWidth, iHeight);
+    // DebugPrint("iWidth = %d, iHeight = %d\n", iWidth, iHeight);
 
     /* 2.确定第1个字符的原点
      * 2.1 先计算左上角坐标
      */
     iStrTopLeftX = iTopLeftX + (iBotRightX - iTopLeftX - iWidth) / 2;
     iStrTopLeftY = iTopLeftY + (iBotRightY - iTopLeftY - iHeight) / 2;
-    // DBG_PRINTF("iNewFirstFontTopLeftX = %d, iNewFirstFontTopLeftY = %d\n", iNewFirstFontTopLeftX, iNewFirstFontTopLeftY);
+    // DebugPrint("iNewFirstFontTopLeftX = %d, iNewFirstFontTopLeftY = %d\n", iNewFirstFontTopLeftX, iNewFirstFontTopLeftY);
 
     /*
      * 2.2 再计算第1个字符原点坐标
@@ -504,7 +505,7 @@ int MergerStringToCenterOfRectangleInVideoMem(int iTopLeftX, int iTopLeftY, int 
     tFontBitMap.iCurOriginX = iStrTopLeftX - iMinX;
     tFontBitMap.iCurOriginY = iStrTopLeftY - iMinY;
 
-    // DBG_PRINTF("iCurOriginX = %d, iCurOriginY = %d\n", tFontBitMap.iCurOriginX, tFontBitMap.iCurOriginY);
+    // DebugPrint("iCurOriginX = %d, iCurOriginY = %d\n", tFontBitMap.iCurOriginX, tFontBitMap.iCurOriginY);
 
     pucBufStart = pucTextString;
     bHasGetCode = 0;
@@ -517,7 +518,7 @@ int MergerStringToCenterOfRectangleInVideoMem(int iTopLeftX, int iTopLeftY, int 
             /* 字符串结束 */
             if (!bHasGetCode)
             {
-                DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+                DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
                 return -1;
             }
             else
@@ -533,13 +534,13 @@ int MergerStringToCenterOfRectangleInVideoMem(int iTopLeftX, int iTopLeftY, int 
         iError = GetFontBitmap(dwCode, &tFontBitMap);
         if (0 == iError)
         {
-            // DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+            // DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
             /* 显示一个字符 */
             if (isFontInArea(iTopLeftX, iTopLeftY, iBotRightX, iBotRightY, &tFontBitMap))
             {
                 if (MergeOneFontToVideoMem(&tFontBitMap, ptVideoMem))
                 {
-                    DBG_PRINTF("MergeOneFontToVideoMem error for code 0x%x\n", dwCode);
+                    DebugPrint("MergeOneFontToVideoMem error for code 0x%x\n", dwCode);
                     return -1;
                 }
             }
@@ -547,14 +548,14 @@ int MergerStringToCenterOfRectangleInVideoMem(int iTopLeftX, int iTopLeftY, int 
             {
                 return 0;
             }
-            // DBG_PRINTF("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+            // DebugPrint("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 
             tFontBitMap.iCurOriginX = tFontBitMap.iNextOriginX;
             tFontBitMap.iCurOriginY = tFontBitMap.iNextOriginY;
         }
         else
         {
-            DBG_PRINTF("GetFontBitmap for drawing error!\n");
+            DebugPrint("GetFontBitmap for drawing error!\n");
         }
     }
 

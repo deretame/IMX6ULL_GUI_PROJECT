@@ -1,10 +1,9 @@
-#include "../../include/config.h"
-#include "../../include/file.h"
-#include "../../include/pic_operation.h"
-#include "../../include/picfmt_manager.h"
+#include "../include/config.h"
+#include "../include/file.h"
+#include <pic_operation.h>
+#include <picfmt_manager.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 // #pragma pack(push, DD, 1) /* 将当前pack设置压栈保存 */
 // #pragma pack(1)    /* 必须在结构体定义之前使用,这是为了让结构体中各成员按1字节对齐 */
@@ -169,8 +168,8 @@ static int GetPixelDatasFrmBMP(PT_FileMap ptFileMap, PT_PixelDatas ptPixelDatas)
 
     if (iBMPBpp != 24)
     {
-        DBG_PRINTF("iBMPBpp = %d\n", iBMPBpp);
-        DBG_PRINTF("sizeof(BITMAPFILEHEADER) = %d\n", sizeof(BITMAPFILEHEADER));
+        DebugPrint("iBMPBpp = %d\n", iBMPBpp);
+        DebugPrint("sizeof(BITMAPFILEHEADER) = %d\n", sizeof(BITMAPFILEHEADER));
         return -1;
     }
 

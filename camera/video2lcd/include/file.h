@@ -4,25 +4,28 @@
 
 #include <stdio.h>
 
-typedef struct FileMap {
-	char strFileName[256];   /* 文件名 */
-	// int iFd; 
-	FILE * tFp;              /* 文件句柄 */
-	int iFileSize;           /* 文件大小 */
-	unsigned char *pucFileMapMem;  /* 使用mmap函数映射文件得到的内存 */
-}T_FileMap, *PT_FileMap;
+typedef struct FileMap
+{
+    char strFileName[256]; /* 文件名 */
+    // int iFd;
+    FILE * tFp;                    /* 文件句柄 */
+    int iFileSize;                 /* 文件大小 */
+    unsigned char * pucFileMapMem; /* 使用mmap函数映射文件得到的内存 */
+} T_FileMap, *PT_FileMap;
 
 /* 文件类别 */
-typedef enum {
-	FILETYPE_DIR = 0,  /* 目录 */
-	FILETYPE_FILE,     /* 文件 */
-}E_FileType;
+typedef enum
+{
+    FILETYPE_DIR = 0, /* 目录 */
+    FILETYPE_FILE,    /* 文件 */
+} E_FileType;
 
 /* 目录里的内容 */
-typedef struct DirContent {
-	char strName[256];     /* 名字 */
-	E_FileType eFileType;  /* 类别 */	
-}T_DirContent, *PT_DirContent;
+typedef struct DirContent
+{
+    char strName[256];    /* 名字 */
+    E_FileType eFileType; /* 类别 */
+} T_DirContent, *PT_DirContent;
 
 /**********************************************************************
  * 函数名称： MapFile
@@ -66,7 +69,7 @@ void UnMapFile(PT_FileMap ptFileMap);
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-int GetDirContents(char *strDirName, PT_DirContent **pptDirContents, int *piNumber);
+int GetDirContents(char * strDirName, PT_DirContent ** pptDirContents, int * piNumber);
 
 /**********************************************************************
  * 函数名称： FreeDirContents
@@ -79,11 +82,11 @@ int GetDirContents(char *strDirName, PT_DirContent **pptDirContents, int *piNumb
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-void FreeDirContents(PT_DirContent *aptDirContents, int iNumber);
+void FreeDirContents(PT_DirContent * aptDirContents, int iNumber);
 
 /**********************************************************************
  * 函数名称： GetFilesIndir
- * 功能描述： 以深度优先的方式获得目录下的文件 
+ * 功能描述： 以深度优先的方式获得目录下的文件
  *            即: 先获得顶层目录下的文件, 再进入一级子目录A
  *                再获得一级子目录A下的文件, 再进入二级子目录AA, ...
  *                处理完一级子目录A后, 再进入一级子目录B
@@ -96,7 +99,7 @@ void FreeDirContents(PT_DirContent *aptDirContents, int iNumber);
  * 我们使用第2种方法:
  * 假设某目录(包括所有子目录)下所有的文件都给它编一个号
  *
- * 输入参数：strDirName            : 要获得哪个目录下的内容 
+ * 输入参数：strDirName            : 要获得哪个目录下的内容
  *           piStartNumberToRecord : 从第几个文件开始取出它们的名字
  *           iFileCountTotal       : 总共要取出多少个文件的名字
  * 输出参数：piFileCountHaveGet    : 已经得到了多少个文件的名字
@@ -109,7 +112,6 @@ void FreeDirContents(PT_DirContent *aptDirContents, int iNumber);
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-int GetFilesIndir(char *strDirName, int *piStartNumberToRecord, int *piCurFileNumber, int *piFileCountHaveGet, int iFileCountTotal, char apstrFileNames[][256]);
+int GetFilesIndir(char * strDirName, int * piStartNumberToRecord, int * piCurFileNumber, int * piFileCountHaveGet, int iFileCountTotal, char apstrFileNames[][256]);
 
 #endif /* _FILE_H */
-
