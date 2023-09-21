@@ -4,7 +4,6 @@ __build:
 
 obj-y :=
 subdir-y :=
-EXTRA_CFLAGS :=
 
 include Makefile
 
@@ -36,12 +35,12 @@ __build : $(subdir-y) built-in.o
 $(subdir-y):
 	make -C $@ -f $(TOPDIR)/Makefile.build
 
-built-in.o : $(subdir-y) $(cur_objs)
-	$(LD) -r -o $@ $(cur_objs) $(subdir_objs)
+built-in.o : $(cur_objs) $(subdir_objs)
+	$(LD) -r -o $@ $^
 
 dep_file = .$@.d
 
 %.o : %.c
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(CFLAGS_$@) -Wp,-MD,$(dep_file) -c -o $@ $<
+	$(CC) $(CFLAGS) -Wp,-MD,$(dep_file) -c -o $@ $<
 	
 .PHONY : $(PHONY)

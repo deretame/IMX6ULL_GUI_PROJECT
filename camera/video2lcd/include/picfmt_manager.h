@@ -2,8 +2,10 @@
 #ifndef _PIC_MANAGER_H
 #define _PIC_MANAGER_H
 
-#include "config.h"
-#include "pic_operation.h"
+#include <config.h>
+#include <pic_operation.h>
+#include <page_manager.h>
+#include <file.h>
 
 /**********************************************************************
  * 函数名称： RegisterPicFileParser
@@ -70,20 +72,20 @@ int BMPParserInit(void);
  * 功能描述： 根据名字取出指定的"图片文件解析模块"
  * 输入参数： pcName - 名字
  * 输出参数： 无
- * 返 回 值： NULL   - 失败,没有指定的模块,
+ * 返 回 值： NULL   - 失败,没有指定的模块, 
  *            非NULL - "图片文件解析模块"的PT_PicFileParser结构体指针
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-PT_PicFileParser Parser(char * pcName);
+PT_PicFileParser Parser(char *pcName);
 
 /**********************************************************************
  * 函数名称： GetParser
  * 功能描述： 找到能支持指定文件的"图片文件解析模块"
  * 输入参数： ptFileMap - 内含文件信息
  * 输出参数： 无
- * 返 回 值： NULL   - 失败,没有指定的模块,
+ * 返 回 值： NULL   - 失败,没有指定的模块, 
  *            非NULL - 支持该文件的"图片文件解析模块"的PT_PicFileParser结构体指针
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
@@ -92,3 +94,4 @@ PT_PicFileParser Parser(char * pcName);
 PT_PicFileParser GetParser(PT_FileMap ptFileMap);
 
 #endif /* _PIC_MANAGER_H */
+

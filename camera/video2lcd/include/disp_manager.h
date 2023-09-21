@@ -1,64 +1,62 @@
 #ifndef _DISP_MANAGER_H
 #define _DISP_MANAGER_H
 
-#include "pic_operation.h"
+#include <pic_operation.h>
+#include <video_manager.h>
 
 /* 显示区域,含该区域的左上角/右下角座标
  * 如果是图标,还含有图标的文件名
  */
-typedef struct Layout
-{
-    int iTopLeftX;
-    int iTopLeftY;
-    int iBotRightX;
-    int iBotRightY;
-    char * strIconName;
-} T_Layout, *PT_Layout;
+typedef struct Layout {
+	int iTopLeftX;
+	int iTopLeftY;
+	int iBotRightX;
+	int iBotRightY;
+	char *strIconName;
+}T_Layout, *PT_Layout;
+
 
 /* VideoMem的状态:
  * 空闲/用于预先准备显示内容/用于当前线程
  */
-typedef enum
-{
-    VMS_FREE = 0,
-    VMS_USED_FOR_PREPARE,
-    VMS_USED_FOR_CUR,
-} E_VideoMemState;
+typedef enum {
+	VMS_FREE = 0,
+	VMS_USED_FOR_PREPARE,
+	VMS_USED_FOR_CUR,	
+}E_VideoMemState;
 
 /* VideoMem中内存里图片的状态:
  * 空白/正在生成/已经生成
  */
-typedef enum
-{
-    PS_BLANK = 0,
-    PS_GENERATING,
-    PS_GENERATED,
-} E_PicState;
+typedef enum {
+	PS_BLANK = 0,
+	PS_GENERATING,
+	PS_GENERATED,	
+}E_PicState;
 
-typedef struct VideoMem
-{
-    int iID;                        /* ID值,用于标识不同的页面 */
-    int bDevFrameBuffer;            /* 1: 这个VideoMem是显示设备的显存; 0: 只是一个普通缓存 */
-    E_VideoMemState eVideoMemState; /* 这个VideoMem的状态 */
-    E_PicState ePicState;           /* VideoMem中内存里图片的状态 */
-    T_PixelDatas tPixelDatas;       /* 内存: 用来存储图像 */
-    struct VideoMem * ptNext;       /* 链表 */
-} T_VideoMem, *PT_VideoMem;
 
-typedef struct DispOpr
-{
-    char * name;                                                  /* 显示模块的名字 */
-    int iXres;                                                    /* X分辨率 */
-    int iYres;                                                    /* Y分辨率 */
-    int iBpp;                                                     /* 一个象素用多少位来表示 */
-    int iLineWidth;                                               /* 一行数据占据多少字节 */
-    unsigned char * pucDispMem;                                   /* 显存地址 */
-    int (*DeviceInit)(void);                                      /* 设备初始化函数 */
-    int (*ShowPixel)(int iPenX, int iPenY, unsigned int dwColor); /* 把指定座标的象素设为某颜色 */
-    int (*CleanScreen)(unsigned int dwBackColor);                 /* 清屏为某颜色 */
-    int (*ShowPage)(PT_VideoMem ptVideoMem);                      /* 显示一页,数据源自ptVideoMem */
-    struct DispOpr * ptNext;                                      /* 链表 */
-} T_DispOpr, *PT_DispOpr;
+typedef struct VideoMem {
+	int iID;                        /* ID值,用于标识不同的页面 */
+	int bDevFrameBuffer;            /* 1: 这个VideoMem是显示设备的显存; 0: 只是一个普通缓存 */
+	E_VideoMemState eVideoMemState; /* 这个VideoMem的状态 */
+	E_PicState ePicState;           /* VideoMem中内存里图片的状态 */
+	T_PixelDatas tPixelDatas;       /* 内存: 用来存储图像 */
+	struct VideoMem *ptNext;        /* 链表 */
+}T_VideoMem, *PT_VideoMem;
+
+typedef struct DispOpr {
+	char *name;              /* 显示模块的名字 */
+	int iXres;               /* X分辨率 */
+	int iYres;               /* Y分辨率 */
+	int iBpp;                /* 一个象素用多少位来表示 */
+	int iLineWidth;          /* 一行数据占据多少字节 */
+	unsigned char *pucDispMem;   /* 显存地址 */
+	int (*DeviceInit)(void);     /* 设备初始化函数 */
+	int (*ShowPixel)(int iPenX, int iPenY, unsigned int dwColor);    /* 把指定座标的象素设为某颜色 */
+	int (*CleanScreen)(unsigned int dwBackColor);                    /* 清屏为某颜色 */
+	int (*ShowPage)(PT_PixelDatas ptPixelDatas);                         /* 显示一页,数据源自ptVideoMem */
+	struct DispOpr *ptNext;      /* 链表 */
+}T_DispOpr, *PT_DispOpr;
 
 /**********************************************************************
  * 函数名称： RegisterDispOpr
@@ -106,7 +104,7 @@ int DisplayInit(void);
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-void SelectAndInitDefaultDispDev(char * name);
+void SelectAndInitDefaultDispDev(char *name);
 
 /**********************************************************************
  * 函数名称： GetDefaultDispDev
@@ -134,7 +132,7 @@ PT_DispOpr GetDefaultDispDev(void);
  * -----------------------------------------------
  * 2013/02/08	     V1.0	  韦东山	      创建
  ***********************************************************************/
-int GetDispResolution(int * piXres, int * piYres, int * piBpp);
+int GetDispResolution(int *piXres, int *piYres, int *piBpp);
 
 /**********************************************************************
  * 函数名称： AllocVideoMem
@@ -165,7 +163,7 @@ PT_VideoMem GetDevVideoMem(void);
 
 /**********************************************************************
  * 函数名称： GetVideoMem
- * 功能描述： 获得一块可操作的VideoMem(它用于存储要显示的数据),
+ * 功能描述： 获得一块可操作的VideoMem(它用于存储要显示的数据), 
  *            用完后用PutVideoMem来释放
  * 输入参数： iID  - ID值,先尝试在众多VideoMem中找到ID值相同的
  *            bCur - 1表示当前程序马上要使用VideoMem,无法如何都要返回一个VideoMem
@@ -230,4 +228,8 @@ void ClearVideoMemRegion(PT_VideoMem ptVideoMem, PT_Layout ptLayout, unsigned in
  ***********************************************************************/
 int FBInit(void);
 
+int GetVideoBufForDisplay(PT_VideoBuf ptFrameBuf);
+void FlushPixelDatasToDev(PT_PixelDatas ptPixelDatas);
+
 #endif /* _DISP_MANAGER_H */
+

@@ -1,8 +1,9 @@
 
-#include "../include/disp_manager.h"
-#include "../include/config.h"
+#include <config.h>
+#include <disp_manager.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 static PT_DispOpr g_ptDispOprHead;
 static PT_DispOpr g_ptDefaultDispOpr;
@@ -151,6 +152,24 @@ int GetDispResolution(int * piXres, int * piYres, int * piBpp)
     {
         return -1;
     }
+}
+
+int GetVideoBufForDisplay(PT_VideoBuf ptFrameBuf)
+{
+    ptFrameBuf->iPixelFormat              = (g_ptDefaultDispOpr->iBpp == 16) ? V4L2_PIX_FMT_RGB565 : (g_ptDefaultDispOpr->iBpp == 32) ? V4L2_PIX_FMT_RGB32
+                                                                                                                                      : 0;
+    ptFrameBuf->tPixelDatas.iWidth        = g_ptDefaultDispOpr->iXres;
+    ptFrameBuf->tPixelDatas.iHeight       = g_ptDefaultDispOpr->iYres;
+    ptFrameBuf->tPixelDatas.iBpp          = g_ptDefaultDispOpr->iBpp;
+    ptFrameBuf->tPixelDatas.iLineBytes    = g_ptDefaultDispOpr->iLineWidth;
+    ptFrameBuf->tPixelDatas.iTotalBytes   = ptFrameBuf->tPixelDatas.iLineBytes * ptFrameBuf->tPixelDatas.iHeight;
+    ptFrameBuf->tPixelDatas.aucPixelDatas = g_ptDefaultDispOpr->pucDispMem;
+    return 0;
+}
+
+void FlushPixelDatasToDev(PT_PixelDatas ptPixelDatas)
+{
+    g_ptDefaultDispOpr->ShowPage(ptPixelDatas);
 }
 
 /**********************************************************************
@@ -426,7 +445,7 @@ void ClearVideoMem(PT_VideoMem ptVideoMem, unsigned int dwColor)
     }
     default:
     {
-        DebugPrint("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
+        DBG_PRINTF("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
         return;
     }
     }
@@ -508,7 +527,7 @@ void ClearVideoMemRegion(PT_VideoMem ptVideoMem, PT_Layout ptLayout, unsigned in
     }
     default:
     {
-        DebugPrint("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
+        DBG_PRINTF("can't support %d bpp\n", ptVideoMem->tPixelDatas.iBpp);
         return;
     }
     }

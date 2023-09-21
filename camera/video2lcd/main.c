@@ -1,91 +1,173 @@
-#include "include/config.h"
-#include "include/disp_manager.h"
-#include "include/encoding_manager.h"
-#include "include/fonts_manager.h"
-#include "include/input_manager.h"
-#include "include/pic_operation.h"
-#include "include/picfmt_manager.h"
-#include "include/render.h"
-#include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <config.h>
+#include <disp_manager.h>
+#include <video_manager.h>
+#include <convert_manager.h>
+#include <render.h>
 #include <string.h>
-#include <unistd.h>
 
-#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
-/* digitpic <freetype_file> */
-int main(int argc, char ** argv)
-{
-    int iError;
 
-    /* 初始化调试模块: 可以通过"标准输出"也可以通过"网络"打印调试信息
-     * 因为下面马上就要用到DBG_PRINTF函数, 所以先初始化调试模块
-     */
+/* video2lcd </dev/video0,1,...> */
+int main(int argc, char **argv)
+{	
+	int iError;
+    T_VideoDevice tVideoDevice;
+    PT_VideoConvert ptVideoConvert;
+    int iPixelFormatOfVideo;
+    int iPixelFormatOfDisp;
 
-    /* 注册调试通道 */
-    DebugInit();
+    PT_VideoBuf ptVideoBufCur;
+    T_VideoBuf tVideoBuf;
+    T_VideoBuf tConvertBuf;
+    T_VideoBuf tZoomBuf;
+    T_VideoBuf tFrameBuf;
+    
+    int iLcdWidth;
+    int iLcdHeigt;
+    int iLcdBpp;
 
-    /* 初始化调试通道 */
-    InitDebugChanel();
+    int iTopLeftX;
+    int iTopLeftY;
 
+    float k;
+    
     if (argc != 2)
     {
-        DebugPrint("Usage:\n");
-        DebugPrint("%s <freetype_file>\n", argv[0]);
-        return 0;
+        printf("Usage:\n");
+        printf("%s </dev/video0,1,...>\n", argv[0]);
+        return -1;
     }
+    
+    
 
-    /* 注册显示设备 */
-    DisplayInit();
-    /* 可能可支持多个显示设备: 选择和初始化指定的显示设备 */
-    SelectAndInitDefaultDispDev("fb");
+    /* 一系列的初始化 */
+	/* 注册显示设备 */
+	DisplayInit();
+	/* 可能可支持多个显示设备: 选择和初始化指定的显示设备 */
+	SelectAndInitDefaultDispDev("fb");
+    GetDispResolution(&iLcdWidth, &iLcdHeigt, &iLcdBpp);
+    GetVideoBufForDisplay(&tFrameBuf);
+    iPixelFormatOfDisp = tFrameBuf.iPixelFormat;
 
-    /*
-     * VideoMem: 为加快显示速度,我们事先在内存中构造好显示的页面的数据,
-                 (这个内存称为VideoMem)
-     *           显示时再把VideoMem中的数据复制到设备的显存上
-     * 参数的含义就是分配的多少个VideoMem
-     * 参数可取为0, 这意味着所有的显示数据都是在显示时再现场生成,然后写入显存
-     */
-    AllocVideoMem(5);
+    VideoInit();
 
-    /* 注册输入设备 */
-    InputInit();
-    /* 调用所有输入设备的初始化函数 */
-    AllInputDevicesInit();
-
-    /* 注册编码模块 */
-    EncodingInit();
-
-    /* 注册字库模块 */
-    iError = FontsInit();
+    iError = VideoDeviceInit(argv[1], &tVideoDevice);
     if (iError)
     {
-        DebugPrint("FontsInit error!\n");
+        DBG_PRINTF("VideoDeviceInit for %s error!\n", argv[1]);
+        return -1;
+    }
+    iPixelFormatOfVideo = tVideoDevice.ptOPr->GetFormat(&tVideoDevice);
+
+    VideoConvertInit();
+    ptVideoConvert = GetVideoConvertForFormats(iPixelFormatOfVideo, iPixelFormatOfDisp);
+    if (NULL == ptVideoConvert)
+    {
+        DBG_PRINTF("can not support this format convert\n");
+        return -1;
     }
 
-    /* 设置freetype字库所用的文件和字体尺寸 */
-    iError = SetFontsDetail("freetype", argv[1], 24);
+
+    /* 启动摄像头设备 */
+    iError = tVideoDevice.ptOPr->StartDevice(&tVideoDevice);
     if (iError)
     {
-        DebugPrint("SetFontsDetail error!\n");
+        DBG_PRINTF("StartDevice for %s error!\n", argv[1]);
+        return -1;
     }
 
-    /* 注册图片文件解析模块 */
-    PicFmtsInit();
+    memset(&tVideoBuf, 0, sizeof(tVideoBuf));
+    memset(&tConvertBuf, 0, sizeof(tConvertBuf));
+    tConvertBuf.iPixelFormat     = iPixelFormatOfDisp;
+    tConvertBuf.tPixelDatas.iBpp = iLcdBpp;
+    
+    
+    memset(&tZoomBuf, 0, sizeof(tZoomBuf));
+    
 
-    /* 注册页面 */
-    PagesInit();
+    while (1)
+    {
+        /* 读入摄像头数据 */
+        iError = tVideoDevice.ptOPr->GetFrame(&tVideoDevice, &tVideoBuf);
+        if (iError)
+        {
+            DBG_PRINTF("GetFrame for %s error!\n", argv[1]);
+            return -1;
+        }
+        ptVideoBufCur = &tVideoBuf;
 
-    /* 运行主页面 */
-    Page("main")->Run(NULL);
+        if (iPixelFormatOfVideo != iPixelFormatOfDisp)
+        {
+            /* 转换为RGB */
+            iError = ptVideoConvert->Convert(&tVideoBuf, &tConvertBuf);
+            DBG_PRINTF("Convert %s, ret = %d\n", ptVideoConvert->name, iError);
+            if (iError)
+            {
+                DBG_PRINTF("Convert for %s error!\n", argv[1]);
+                return -1;
+            }            
+            ptVideoBufCur = &tConvertBuf;
+        }
+        
 
-    return 0;
+        /* 如果图像分辨率大于LCD, 缩放 */
+        if (ptVideoBufCur->tPixelDatas.iWidth > iLcdWidth || ptVideoBufCur->tPixelDatas.iHeight > iLcdHeigt)
+        {
+            /* 确定缩放后的分辨率 */
+            /* 把图片按比例缩放到VideoMem上, 居中显示
+             * 1. 先算出缩放后的大小
+             */
+            k = (float)ptVideoBufCur->tPixelDatas.iHeight / ptVideoBufCur->tPixelDatas.iWidth;
+            tZoomBuf.tPixelDatas.iWidth  = iLcdWidth;
+            tZoomBuf.tPixelDatas.iHeight = iLcdWidth * k;
+            if ( tZoomBuf.tPixelDatas.iHeight > iLcdHeigt)
+            {
+                tZoomBuf.tPixelDatas.iWidth  = iLcdHeigt / k;
+                tZoomBuf.tPixelDatas.iHeight = iLcdHeigt;
+            }
+            tZoomBuf.tPixelDatas.iBpp        = iLcdBpp;
+            tZoomBuf.tPixelDatas.iLineBytes  = tZoomBuf.tPixelDatas.iWidth * tZoomBuf.tPixelDatas.iBpp / 8;
+            tZoomBuf.tPixelDatas.iTotalBytes = tZoomBuf.tPixelDatas.iLineBytes * tZoomBuf.tPixelDatas.iHeight;
+
+            if (!tZoomBuf.tPixelDatas.aucPixelDatas)
+            {
+                tZoomBuf.tPixelDatas.aucPixelDatas = malloc(tZoomBuf.tPixelDatas.iTotalBytes);
+            }
+            
+            PicZoom(&ptVideoBufCur->tPixelDatas, &tZoomBuf.tPixelDatas);
+            ptVideoBufCur = &tZoomBuf;
+        }
+
+        /* 合并进framebuffer */
+        /* 接着算出居中显示时左上角坐标 */
+        iTopLeftX = (iLcdWidth - ptVideoBufCur->tPixelDatas.iWidth) / 2;
+        iTopLeftY = (iLcdHeigt - ptVideoBufCur->tPixelDatas.iHeight) / 2;
+
+        PicMerge(iTopLeftX, iTopLeftY, &ptVideoBufCur->tPixelDatas, &tFrameBuf.tPixelDatas);
+
+        FlushPixelDatasToDev(&tFrameBuf.tPixelDatas);
+
+        iError = tVideoDevice.ptOPr->PutFrame(&tVideoDevice, &tVideoBuf);
+        if (iError)
+        {
+            DBG_PRINTF("PutFrame for %s error!\n", argv[1]);
+            return -1;
+        }                    
+
+        /* 把framebuffer的数据刷到LCD上, 显示 */
+    }
+		
+	return 0;
 }
+
