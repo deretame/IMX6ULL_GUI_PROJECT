@@ -23,7 +23,7 @@ static T_PageLayout g_tMainPageLayout = {
  * 返 回 值： 无
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
+ * 2013/02/08	     V1.0	  蔡思凯	      创建
  ***********************************************************************/
 static void CalcMainPageLayout(PT_PageLayout ptPageLayout)
 {
@@ -100,7 +100,7 @@ static void CalcMainPageLayout(PT_PageLayout ptPageLayout)
  *            其他值 - 输入数据所落在的图标(PageLayout->atLayout数组的哪一项)
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
+ * 2013/02/08	     V1.0	  蔡思凯	      创建
  ***********************************************************************/
 static int MainPageGetInputEvent(PT_PageLayout ptPageLayout, PT_InputEvent ptInputEvent)
 {
@@ -115,7 +115,7 @@ static int MainPageGetInputEvent(PT_PageLayout ptPageLayout, PT_InputEvent ptInp
  * 返 回 值： 无
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
+ * 2013/02/08	     V1.0	  蔡思凯	      创建
  ***********************************************************************/
 static void ShowMainPage(PT_PageLayout ptPageLayout)
 {
@@ -158,7 +158,7 @@ static void ShowMainPage(PT_PageLayout ptPageLayout)
  * 返 回 值： 无
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
+ * 2013/02/08	     V1.0	  蔡思凯	      创建
  ***********************************************************************/
 static void MainPageRun(PT_PageParams ptParentPageParams)
 {
@@ -265,7 +265,7 @@ static T_PageAction g_tMainPageAction = {
  * 返 回 值： 0 - 成功, 其他值 - 失败
  * 修改日期        版本号     修改人	      修改内容
  * -----------------------------------------------
- * 2013/02/08	     V1.0	  韦东山	      创建
+ * 2013/02/08	     V1.0	  蔡思凯	      创建
  ***********************************************************************/
 int MainPageInit(void)
 {
